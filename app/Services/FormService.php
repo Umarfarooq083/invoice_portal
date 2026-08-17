@@ -18,7 +18,6 @@ class FormService
     {
         return [
             'blocks' => Block::all(['id', 'name'])->toArray(),
-            'phases' => Phase::all(['id', 'name'])->toArray(),
             'app_types' => AppType::all(['id', 'name'])->toArray(),
             'app_sizes' => config('form_options.app_sizes', []),
             'reg_types' => config('form_options.residential_options', []),
