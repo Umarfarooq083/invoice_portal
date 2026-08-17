@@ -13,10 +13,15 @@ const sidebarStorageKey = 'invoice-portal-sidebar-collapsed';
 
 const navigation = [
     { name: 'Dashboard', href: route('dashboard'), icon: 'home', routeName: 'dashboard' },
+    { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
 ];
 
 const pageTitles = {
     Dashboard: 'Dashboard',
+    'Forms/Index': 'Forms',
+    'Forms/Create': 'Create Form',
+    'Forms/Edit': 'Edit Form',
+    'Forms/Show': 'Form Details',
     Invoices: 'Invoices',
     Clients: 'Clients',
     Products: 'Products',

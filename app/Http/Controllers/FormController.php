@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Form;
-use App\Services\FormService;
 use App\Http\Requests\StoreFormRequest;
 use App\Http\Requests\UpdateFormRequest;
+use App\Models\Form;
+use App\Services\FormService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
 
 class FormController extends Controller
 {
@@ -25,13 +25,22 @@ class FormController extends Controller
      */
     public function index(Request $request): Response
     {
-        $filters = $request->only(['search', 'society_id', 'office_id', 'form_type']);
+        $filters = $request->only([
+            'search',
+            'society_id',
+            'office_id',
+            'form_type',
+            'block_id',
+            'phase_id',
+            'size',
+        ]);
 
         $forms = $this->formService->getAllForms($filters);
 
         return Inertia::render('Forms/Index', [
-            'forms'   => $forms,
+            'forms' => $forms,
             'filters' => $filters,
+            'dropdowns' => $this->formService->getDropdownOptions(),
         ]);
     }
 
@@ -52,7 +61,9 @@ class FormController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Forms/Create');
+        return Inertia::render('Forms/Create', [
+            'dropdowns' => $this->formService->getDropdownOptions(),
+        ]);
     }
 
     /**
@@ -74,6 +85,7 @@ class FormController extends Controller
     {
         return Inertia::render('Forms/Edit', [
             'form' => $form,
+            'dropdowns' => $this->formService->getDropdownOptions(),
         ]);
     }
 

@@ -29,7 +29,7 @@ return new class extends Migration
             $table->integer('down_payment');
             $table->integer('society_id');
             $table->string('contact');
-            $table->string('deposite_slip_no');
+            $table->string('deposite_slip_no')->nullable();
             $table->tinyInteger('form_type')->nullable();
             $table->integer('plot_price')->nullable();
             $table->string('dealer_name')->nullable();

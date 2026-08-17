@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
@@ -12,6 +12,7 @@ class Form extends Model
     protected $table = 'forms';
 
     protected $fillable = [
+        'block_id',
         'rebate_id',
         'form_no',
         'inv_reg_no',
@@ -49,12 +50,12 @@ class Form extends Model
     ];
 
     protected $casts = [
-        'is_create_live'     => 'boolean',
+        'is_create_live' => 'boolean',
         'is_member_transfer' => 'boolean',
-        'down_payment'       => 'integer',
-        'plot_price'         => 'integer',
-        'system_created_at'  => 'datetime',
-        'cron_updated_at'    => 'datetime',
+        'down_payment' => 'integer',
+        'plot_price' => 'integer',
+        'system_created_at' => 'datetime',
+        'cron_updated_at' => 'datetime',
     ];
 
     // ─── Relationships ────────────────────────────────────────────────────────
@@ -65,5 +66,29 @@ class Form extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * The block this form belongs to.
+     */
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'block_id');
+    }
+
+    /**
+     * The phase this form belongs to.
+     */
+    public function phase()
+    {
+        return $this->belongsTo(Phase::class, 'phase_id');
+    }
+
+    /**
+     * The application type of this form.
+     */
+    public function appType()
+    {
+        return $this->belongsTo(AppType::class, 'form_type', 'id');
     }
 }

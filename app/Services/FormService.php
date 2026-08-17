@@ -2,64 +2,107 @@
 
 namespace App\Services;
 
+use App\Models\AppType;
+use App\Models\Block;
 use App\Models\Form;
+use App\Models\Phase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class FormService
 {
     /**
+     * Get all dropdown options needed for create/edit forms.
+     */
+    public function getDropdownOptions(): array
+    {
+        return [
+            'blocks' => Block::all(['id', 'name'])->toArray(),
+            'phases' => Phase::all(['id', 'name'])->toArray(),
+            'app_types' => AppType::all(['id', 'name'])->toArray(),
+            'app_sizes' => config('form_options.app_sizes', []),
+            'reg_types' => config('form_options.residential_options', []),
+        ];
+    }
+
+    /**
      * Get all forms with optional filters, paginated.
      */
-    public function getAllForms(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function getAllForms(array $filters = [], int $perPage = 5): LengthAwarePaginator
     {
         $query = Form::query();
 
         // Search by client name, CNIC, form number, or tracking code
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('client_name', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('client_cnic', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('form_no', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('tracking_code', 'like', '%' . $filters['search'] . '%');
+                $q->where('client_name', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('client_cnic', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('form_no', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('tracking_code', 'like', '%'.$filters['search'].'%');
             });
         }
 
         // Filter by society
-        if (!empty($filters['society_id'])) {
+        if (! empty($filters['society_id'])) {
             $query->where('society_id', $filters['society_id']);
         }
 
         // Filter by office
-        if (!empty($filters['office_id'])) {
+        if (! empty($filters['office_id'])) {
             $query->where('office_id', $filters['office_id']);
         }
 
         // Filter by form type
-        if (isset($filters['form_type'])) {
+        if (! empty($filters['form_type'])) {
             $query->where('form_type', $filters['form_type']);
         }
 
-        return $query->with('user')->latest()->paginate($perPage);
+        // Filter by block
+        if (! empty($filters['block_id'])) {
+            $query->where('block_id', $filters['block_id']);
+        }
+
+        // Filter by app size
+        if (! empty($filters['size'])) {
+            $query->where('size', $filters['size']);
+        }
+
+        return $query->with(['user', 'block', 'appType'])->latest()->paginate($perPage)->appends(request()->query());
     }
 
     /**
-     * Find a single form by ID with related user, or throw 404.
+     * Find a single form by ID with related data, or throw 404.
      */
     public function findForm(int $id): Form
     {
-        return Form::with('user')->findOrFail($id);
+        return Form::with(['user', 'block', 'appType'])->findOrFail($id);
     }
 
     /**
      * Create a new form record.
      * Auto-generates tracking code and QR code value if not provided.
+     * Auto-sets the current user as user_id if not provided.
      */
     public function createForm(array $data): Form
     {
+        // Auto-set the authenticated user
+        if (empty($data['user_id'])) {
+            $data['user_id'] = auth()->id();
+        }
+
+        // Default to residential since the checkbox is no longer user-facing
+        if (empty($data['reg_type'])) {
+            $data['reg_type'] = 'residential';
+        }
+
         // Generate a unique tracking code if not supplied
         if (empty($data['tracking_code'])) {
             $data['tracking_code'] = $this->generateTrackingCode();
+        }
+
+        // Auto-generate box_no from the current date (DDMMYY) if not supplied
+        if (empty($data['box_no'])) {
+            $data['box_no'] = $this->generateBoxNo();
         }
 
         // Derive QR code value from the tracking code
@@ -75,6 +118,16 @@ class FormService
      */
     public function updateForm(Form $form, array $data): Form
     {
+        // Default to residential since the checkbox is no longer user-facing
+        if (empty($data['reg_type'])) {
+            $data['reg_type'] = 'residential';
+        }
+
+        // Ensure box_no is set; preserve existing value on edit
+        if (empty($data['box_no'])) {
+            $data['box_no'] = $form->box_no;
+        }
+
         $form->update($data);
 
         return $form->fresh();
@@ -94,7 +147,7 @@ class FormService
     public function markAsLive(Form $form): Form
     {
         $form->update([
-            'is_create_live'    => 1,
+            'is_create_live' => 1,
             'system_created_at' => now(),
         ]);
 
@@ -108,7 +161,7 @@ class FormService
     {
         $form->update([
             'is_member_transfer' => 1,
-            'cron_updated_at'    => now(),
+            'cron_updated_at' => now(),
         ]);
 
         return $form->fresh();
@@ -133,6 +186,15 @@ class FormService
      */
     private function generateQrCodeValue(string $trackingCode): string
     {
-        return 'INV-' . strtoupper($trackingCode);
+        return 'INV-'.strtoupper($trackingCode);
+    }
+
+    /**
+     * Generate a box number from the current date in DDMMYY format
+     * (e.g. 17/08/2026 → 170826).
+     */
+    private function generateBoxNo(): string
+    {
+        return now()->format('dmy');
     }
 }
