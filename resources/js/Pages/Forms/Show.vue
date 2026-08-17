@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm,Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -48,7 +48,6 @@ const detailRows = computed(() => [
     { label: 'Client Name', value: props.form.client_name },
     { label: 'Contact', value: props.form.contact },
     { label: 'Client Cnic', value: props.form.client_cnic },
-    { label: 'Address', value: props.form.address },
     { label: 'Box No', value: props.form.box_no },
     { label: 'Sr No', value: props.form.sr_no },
     { label: 'Submitted By', value: props.form.submitted_by ?? '-' },
@@ -79,9 +78,9 @@ const detailRows = computed(() => [
                     <DangerButton @click="confirmDelete">
                         Delete
                     </DangerButton>
-                    <PrimaryButton :href="route('forms.index')">
+                    <Link :href="route('forms.index')" class="btn btn-primary">
                         Back to List
-                    </PrimaryButton>
+                    </Link>
                 </div>
             </div>
         </template>

@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('client_cnic');
             $table->string('tracking_code');
             $table->string('size');
-            $table->string('reg_type');
-            $table->text('address');
+            $table->string('reg_type')->nullable();
             $table->integer('office_id');
             $table->integer('box_no');
             $table->integer('sr_no');

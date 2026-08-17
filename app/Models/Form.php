@@ -73,22 +73,15 @@ class Form extends Model
      */
     public function block()
     {
-        return $this->belongsTo(Block::class, 'block_id');
+        return $this->belongsTo(Block::class, 'society_id', 'id');
     }
 
-    /**
-     * The phase this form belongs to.
-     */
-    public function phase()
-    {
-        return $this->belongsTo(Phase::class, 'phase_id');
-    }
 
     /**
      * The application type of this form.
      */
     public function appType()
     {
-        return $this->belongsTo(AppType::class, 'form_type', 'id');
+        return $this->belongsTo(AppType::class, 'reg_type', 'id');
     }
 }

@@ -30,13 +30,10 @@ class FormController extends Controller
             'society_id',
             'office_id',
             'form_type',
-            'block_id',
-            'phase_id',
             'size',
         ]);
 
         $forms = $this->formService->getAllForms($filters);
-
         return Inertia::render('Forms/Index', [
             'forms' => $forms,
             'filters' => $filters,
@@ -74,7 +71,7 @@ class FormController extends Controller
         $form = $this->formService->createForm($request->validated());
 
         return redirect()
-            ->route('forms.show', $form)
+            ->route('forms.index', $form)
             ->with('success', 'Form created successfully.');
     }
 
@@ -97,7 +94,7 @@ class FormController extends Controller
         $this->formService->updateForm($form, $request->validated());
 
         return redirect()
-            ->route('forms.show', $form)
+            ->route('forms.index', $form)
             ->with('success', 'Form updated successfully.');
     }
 

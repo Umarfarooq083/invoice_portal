@@ -34,7 +34,7 @@ class UpdateFormRequest extends FormRequest
                 Rule::unique('forms', 'tracking_code')->ignore($formId),
             ],
             'size' => ['sometimes', 'required', 'string', 'max:100'],
-            'reg_type' => ['nullable', 'string', 'in:residential,commercial'],
+            'reg_type' => ['required', 'integer', 'exists:app_types,id'],
             'office_id' => ['nullable', 'integer'],
             'box_no' => ['sometimes', 'nullable', 'max:50'],
             'sr_no' => ['sometimes', 'required', 'integer'],

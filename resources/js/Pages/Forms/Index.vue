@@ -3,6 +3,7 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Pagination from '@/Components/Pagination.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -17,7 +18,6 @@ const props = defineProps({
 const filterForm = useForm({
     search: props.filters?.search ?? '',
     block_id: props.filters?.block_id ?? '',
-    phase_id: props.filters?.phase_id ?? '',
     form_type: props.filters?.form_type ?? '',
     size: props.filters?.size ?? '',
 });
@@ -44,7 +44,6 @@ function applyFilters() {
 function resetFilters() {
     filterForm.search = '';
     filterForm.block_id = '';
-    filterForm.phase_id = '';
     filterForm.form_type = '';
     filterForm.size = '';
     filterForm.get(route('forms.index'), {
@@ -81,7 +80,6 @@ function statusBadge(status) {
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Forms</h1>
-                    <p class="page-subtitle">Manage all main form records</p>
                 </div>
                 <Link :href="route('forms.create')" class="btn btn-primary">
                     Add New Form
@@ -145,19 +143,7 @@ function statusBadge(status) {
                     </select>
                 </div>
 
-                <div>
-                    <InputLabel value="Phase Id" />
-                    <select class="input" v-model="filterForm.phase_id">
-                        <option value="">All</option>
-                        <option
-                            v-for="phase in dropdowns.phases"
-                            :key="phase.id"
-                            :value="String(phase.id)"
-                        >
-                            {{ phase.name }}
-                        </option>
-                    </select>
-                </div>
+                
             </form>
 
             <div class="mt-4 flex justify-end gap-3">
@@ -178,13 +164,11 @@ function statusBadge(status) {
                             <th>Form No</th>
                             <th>Client Name</th>
                             <th>Tracking Code</th>
-                            <th>Phase</th>
                             <th>Block</th>
                             <th>App Type</th>
                             <th>Plot Size</th>
                             <th>Plot Price</th>
                             <th>Down Payment</th>
-                            <th>Status</th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
@@ -196,17 +180,11 @@ function statusBadge(status) {
                             <td>{{ form.form_no }}</td>
                             <td>{{ form.client_name }}</td>
                             <td>{{ form.tracking_code }}</td>
-                            <td>{{ form.phase?.name ?? '-' }}</td>
                             <td>{{ form.block?.name ?? '-' }}</td>
                             <td>{{ form.app_type?.name ?? '-' }}</td>
                             <td>{{ form.size }}</td>
                             <td>{{ formatCurrency(form.plot_price) }}</td>
                             <td>{{ formatCurrency(form.down_payment) }}</td>
-                            <td>
-                                <span :class="statusBadge(form.is_create_live)">
-                                    {{ form.is_create_live ? 'Live' : 'Pending' }}
-                                </span>
-                            </td>
                             <td class="text-right">
                                 <div class="flex justify-end gap-2">
                                     <a
@@ -220,12 +198,12 @@ function statusBadge(status) {
                                     >
                                         Edit
                                     </Link>
-                                    <button
+                                    <!-- <button
                                         @click="confirmDelete(form)"
                                         class="text-sm text-danger-600 hover:text-danger-700"
                                     >
                                         Delete
-                                    </button>
+                                    </button> -->
                                 </div>
                             </td>
                         </tr>
@@ -240,33 +218,8 @@ function statusBadge(status) {
                 No forms found.
             </div>
 
-            <div
-                v-if="forms.meta && forms.meta.total > 0"
-                class="px-6 py-4 border-t border-dark-200"
-            >
-                <div class="flex items-center justify-between text-sm text-dark-500">
-                    <div>
-                        Showing {{ forms.meta.from }} - {{ forms.meta.to }} of
-                        {{ forms.meta.total }} results
-                    </div>
-                <div class="flex items-center gap-2">
-                    <template v-if="forms.links">
-                        <a
-                            v-for="link in forms.links"
-                            :key="link.label"
-                            :href="link.url || undefined"
-                            v-html="link.label"
-                            :class="[
-                                'px-3 py-1 rounded-xl text-sm font-medium transition-all',
-                                link.active
-                                    ? 'bg-primary-600 text-white'
-                                    : 'text-dark-700 hover:bg-dark-100',
-                                !link.url && 'opacity-50 cursor-not-allowed',
-                            ]"
-                        />
-                    </template>
-                </div>
-                </div>
+            <div class="p-4 sm:p-6 border-t border-dark-200">
+                <Pagination v-if="forms" :links="forms.links"  />
             </div>
         </div>
     </AuthenticatedLayout>

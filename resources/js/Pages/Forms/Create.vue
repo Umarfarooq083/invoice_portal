@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -27,8 +27,8 @@ const form = useForm({
     tracking_code: generateTrackingCode(),
     plot_price: '',
     down_payment: '',
-    form_type: '',
-    block_id: '',
+    reg_type: '',
+    society_id: '',
     size: '',
     client_name: '',
     contact: '',
@@ -54,11 +54,10 @@ function submit() {
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Create Form</h1>
-                    <p class="page-subtitle">Add a new main form record</p>
                 </div>
-                <SecondaryButton :href="route('forms.index')">
+                <Link :href="route('forms.index')" class="btn btn-primary">
                     Back to List
-                </SecondaryButton>
+                </Link>
             </div>
         </template>
 
@@ -72,7 +71,7 @@ function submit() {
                         <InputLabel value="Block" />
                         <select
                             class="input"
-                            v-model.number="form.block_id"
+                            v-model.number="form.society_id"
                         >
                             <option value="">Select an Option</option>
                             <option
@@ -83,14 +82,14 @@ function submit() {
                                 {{ block.name }}
                             </option>
                         </select>
-                        <InputError :message="form.errors.block_id" />
+                        <InputError :message="form.errors.society_id" />
                     </div>
 
                      <div class="lg:col-span-1">
                         <InputLabel value="App Type" />
                         <select
                             class="input"
-                            v-model.number="form.form_type"
+                            v-model.number="form.reg_type"
                         >
                             <option value="">Select an Option</option>
                             <option
@@ -101,7 +100,7 @@ function submit() {
                                 {{ type.name }}
                             </option>
                         </select>
-                        <InputError :message="form.errors.form_type" />
+                        <InputError :message="form.errors.reg_type" />
                     </div>
 
                     <div class="lg:col-span-1">

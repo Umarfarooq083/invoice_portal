@@ -28,7 +28,7 @@ class FormService
     /**
      * Get all forms with optional filters, paginated.
      */
-    public function getAllForms(array $filters = [], int $perPage = 5): LengthAwarePaginator
+    public function getAllForms(array $filters = [], int $perPage = 25): LengthAwarePaginator
     {
         $query = Form::query();
 
@@ -55,11 +55,6 @@ class FormService
         // Filter by form type
         if (! empty($filters['form_type'])) {
             $query->where('form_type', $filters['form_type']);
-        }
-
-        // Filter by block
-        if (! empty($filters['block_id'])) {
-            $query->where('block_id', $filters['block_id']);
         }
 
         // Filter by app size
