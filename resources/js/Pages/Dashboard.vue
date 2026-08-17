@@ -87,18 +87,7 @@ function getIconSvg(name) {
     <AuthenticatedLayout>
         <template #header>
             <div class="page-header">
-                <div>
                     <h1 class="page-title">Dashboard</h1>
-                    <p class="page-subtitle mt-1">Welcome back! Here's what's happening with your business.</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <PrimaryButton class="btn-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        New Invoice
-                    </PrimaryButton>
-                </div>
             </div>
         </template>
 
