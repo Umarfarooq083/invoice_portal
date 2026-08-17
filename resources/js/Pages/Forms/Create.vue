@@ -63,7 +63,7 @@ async function fetchFormData() {
 
     try {
         const response = await fetch(
-            `/forms/booking-data?form_no=${encodeURIComponent(num)}`,
+            `${route('forms.booking-data')}?form_no=${encodeURIComponent(num)}`,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',

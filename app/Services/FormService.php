@@ -27,17 +27,17 @@ class FormService
     /**
      * Get all forms with optional filters, paginated.
      */
-    public function getAllForms(array $filters = [], int $perPage = 25): LengthAwarePaginator
+    public function getAllForms(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $query = Form::query();
 
         // Search by client name, CNIC, form number, or tracking code
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('client_name', 'like', '%'.$filters['search'].'%')
-                    ->orWhere('client_cnic', 'like', '%'.$filters['search'].'%')
-                    ->orWhere('form_no', 'like', '%'.$filters['search'].'%')
-                    ->orWhere('tracking_code', 'like', '%'.$filters['search'].'%');
+                $q->where('client_name', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('client_cnic', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('form_no', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('tracking_code', 'like', '%' . $filters['search'] . '%');
             });
         }
 
@@ -180,7 +180,7 @@ class FormService
      */
     private function generateQrCodeValue(string $trackingCode): string
     {
-        return 'INV-'.strtoupper($trackingCode);
+        return 'INV-' . strtoupper($trackingCode);
     }
 
     /**
