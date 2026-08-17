@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('tracking_code');
             $table->string('size');
             $table->string('reg_type')->nullable();
+            $table->string('address')->nullable();
             $table->integer('office_id');
             $table->integer('box_no');
             $table->integer('sr_no');

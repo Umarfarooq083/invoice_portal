@@ -193,11 +193,11 @@ function statusBadge(status) {
                                     >
                                         View
                                     </a>
-                                    <Link :href="route('forms.edit', form.id)"
+                                    <!-- <Link :href="route('forms.edit', form.id)"
                                         class="text-sm text-dark-600 hover:text-primary-600"
                                     >
                                         Edit
-                                    </Link>
+                                    </Link> -->
                                     <!-- <button
                                         @click="confirmDelete(form)"
                                         class="text-sm text-danger-600 hover:text-danger-700"

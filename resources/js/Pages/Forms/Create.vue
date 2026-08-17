@@ -1,4 +1,5 @@
 <script setup>
+import { ref, computed } from 'vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -28,6 +29,7 @@ const form = useForm({
     plot_price: '',
     down_payment: '',
     reg_type: '',
+    address: '',
     society_id: '',
     size: '',
     client_name: '',
@@ -40,6 +42,73 @@ const form = useForm({
     deposite_slip_no: '',
     dealer_id: '',
 });
+
+// API lookup state
+const apiLoading = ref(false);
+const apiError = ref('');
+const apiSuccess = ref(false);
+const liveFormNo = ref('');
+const apiPlotSize = ref('');  // raw plot_size value returned by the API
+
+// Show form_no lookup field only when block is selected
+const showFormNoLookup = computed(() => !!form.society_id);
+
+async function fetchFormData() {
+    const num = liveFormNo.value.toString().trim();
+    if (!num) return;
+
+    apiLoading.value = true;
+    apiError.value = '';
+    apiSuccess.value = false;
+
+    try {
+        const response = await fetch(
+            `/forms/booking-data?form_no=${encodeURIComponent(num)}`,
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error ?? `Server error: ${response.status}`);
+        }
+        if (data && data.id) {
+            form.form_no      = data.form_no       ?? form.form_no;
+            form.plot_price   = data.plot_price    ?? form.plot_price;
+            form.down_payment = data.down_payment  ?? form.down_payment;
+            form.client_name  = data.client_name   ?? form.client_name;
+            form.address      = data.client_address ?? form.address;
+            form.client_cnic  = data.client_cnic   ?? form.client_cnic;
+            form.contact      = data.contact       ?? form.contact;
+
+            // Set App Size directly from the API value
+            if (data.plot_size) {
+                apiPlotSize.value = data.plot_size.toString().trim();
+                form.size = apiPlotSize.value;
+            }
+
+            apiSuccess.value = true;
+        } else {
+            apiError.value = 'No record found. Please check the Form No.';
+        }
+    } catch (err) {
+        apiError.value = 'Request failed: ' + err.message;
+    } finally {
+        apiLoading.value = false;
+    }
+}
+
+function onFormNoKeydown(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        fetchFormData();
+    }
+}
 
 function submit() {
     form.post(route('forms.store'), {
@@ -85,6 +154,33 @@ function submit() {
                         <InputError :message="form.errors.society_id" />
                     </div>
 
+                    <!-- Form No Lookup - appears after block is selected -->
+                    <div class="lg:col-span-1" v-if="showFormNoLookup">
+                        <InputLabel value="Form No (Live Lookup)" />
+                        <div class="form-no-lookup-wrapper" style="position: relative;">
+                            <input
+                                class="input"
+                                type="number"
+                                v-model="liveFormNo"
+                                placeholder="Type a number and press Enter..."
+                                @keydown="onFormNoKeydown"
+                                :disabled="apiLoading"
+                                style="padding-right: 2.5rem;"
+                            />
+                            <span
+                                v-if="apiLoading"
+                                style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);display:flex;align-items:center;"
+                            >
+                                <svg class="api-spinner" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <p v-if="apiError" style="color:#e53e3e;font-size:0.8rem;margin-top:0.25rem;">⚠ {{ apiError }}</p>
+                        <p v-if="apiSuccess" style="color:#38a169;font-size:0.8rem;margin-top:0.25rem;">✓ Data loaded successfully.</p>
+                        <p v-if="!apiSuccess" style="color:#718096;font-size:0.75rem;margin-top:0.2rem;">Press Enter to fetch.</p>
+                    </div>
+
                      <div class="lg:col-span-1">
                         <InputLabel value="App Type" />
                         <select
@@ -109,7 +205,7 @@ function submit() {
                             class="input"
                             type="text"
                             v-model="form.form_no"
-                            placeholder="Enter form no"
+                            placeholder="Enter form no" readonly disabled
                         />
                         <InputError :message="form.errors.form_no" />
                     </div>
@@ -134,13 +230,20 @@ function submit() {
                             v-model="form.size"
                         >
                             <option value="">Select Plot Size</option>
-                            <option
-                                v-for="size in dropdowns.app_sizes"
-                                :key="size"
-                                :value="size"
-                            >
-                                {{ size }}
-                            </option>
+                            <!-- After API fetch: show only the API plot_size value -->
+                            <template v-if="apiPlotSize">
+                                <option :value="apiPlotSize">{{ apiPlotSize }}</option>
+                            </template>
+                            <!-- Before API fetch: show full config list -->
+                            <template v-else>
+                                <option
+                                    v-for="size in dropdowns.app_sizes"
+                                    :key="size"
+                                    :value="size"
+                                >
+                                    {{ size }}
+                                </option>
+                            </template>
                         </select>
                         <InputError :message="form.errors.size" />
                     </div>
@@ -189,6 +292,16 @@ function submit() {
                             placeholder="Enter client name"
                         />
                         <InputError :message="form.errors.client_name" />
+                    </div>
+                    <div class="lg:col-span-1">
+                        <InputLabel value="Address" />
+                        <input
+                            class="input"
+                            type="text"
+                            v-model="form.address"
+                            placeholder="Enter Address"
+                        />
+                        <InputError :message="form.errors.address" />
                     </div>
 
                     <div class="lg:col-span-1">
@@ -283,3 +396,14 @@ function submit() {
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style scoped>
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+.api-spinner {
+    animation: spin 0.8s linear infinite;
+    color: #667eea;
+}
+</style>

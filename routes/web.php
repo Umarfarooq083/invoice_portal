@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ─── Forms Routes ─────────────────────────────────────────────────────────
+    Route::get('/forms/booking-data',           [FormController::class, 'fetchBookingData'])->name('forms.booking-data');
     Route::resource('forms', FormController::class);
     Route::patch('/forms/{form}/mark-live',     [FormController::class, 'markLive'])->name('forms.mark-live');
     Route::patch('/forms/{form}/mark-transfer', [FormController::class, 'markTransfer'])->name('forms.mark-transfer');
