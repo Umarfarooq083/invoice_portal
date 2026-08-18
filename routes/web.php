@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('forms', FormController::class);
     Route::patch('/forms/{form}/mark-live',     [FormController::class, 'markLive'])->name('forms.mark-live');
     Route::patch('/forms/{form}/mark-transfer', [FormController::class, 'markTransfer'])->name('forms.mark-transfer');
+
+    // ─── Dealers Routes ───────────────────────────────────────────────────────
+    Route::resource('dealers', \App\Http\Controllers\DealerController::class);
 });
 
 require __DIR__.'/auth.php';
