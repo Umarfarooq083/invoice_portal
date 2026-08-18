@@ -23,6 +23,7 @@ const navSections = [
         items: [
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Dealers', href: route('dealers.index'), icon: 'users', routeName: 'dealers.index' },
+            { name: 'Invoices', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
         ],
     },
 ];
@@ -36,6 +37,8 @@ const pageTitles = {
     'Dealers/Index': 'Dealers',
     'Dealers/Create': 'Create Dealer',
     'Dealers/Edit': 'Edit Dealer',
+    'Invoices/Index': 'Invoices',
+    'Invoices/Create': 'Create Invoice',
 };
 
 const currentPage = computed(() => {

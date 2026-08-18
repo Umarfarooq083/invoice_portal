@@ -20,19 +20,22 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // ─── Profile Routes ───────────────────────────────────────────────────────
+    // ─── Profile Routes ──────//
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // ─── Forms Routes ─────────────────────────────────────────────────────────
+    // ─── Forms Routes ───────//
     Route::get('/forms/booking-data',           [FormController::class, 'fetchBookingData'])->name('forms.booking-data');
     Route::resource('forms', FormController::class);
     Route::patch('/forms/{form}/mark-live',     [FormController::class, 'markLive'])->name('forms.mark-live');
     Route::patch('/forms/{form}/mark-transfer', [FormController::class, 'markTransfer'])->name('forms.mark-transfer');
 
-    // ─── Dealers Routes ───────────────────────────────────────────────────────
+    // ─── Dealers Routes ───────//
     Route::resource('dealers', \App\Http\Controllers\DealerController::class);
+
+    // ─── Invoices Routes ───────//
+    Route::resource('invoices', \App\Http\Controllers\InvoiceController::class)->only(['index', 'create', 'store']);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
