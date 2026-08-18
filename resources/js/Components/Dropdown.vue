@@ -61,8 +61,9 @@ const open = ref(false);
         >
             <div
                 v-show="open"
-                class="absolute z-50 mt-2 rounded-xl shadow-elegant border border-dark-200 bg-white"
+                class="absolute z-50 mt-2 rounded-xl bg-white"
                 :class="[widthClass, alignmentClasses]"
+                style="border: 1px solid #eef0f4; box-shadow: 0 8px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);"
                 @click="open = false"
             >
                 <div :class="contentClasses">
