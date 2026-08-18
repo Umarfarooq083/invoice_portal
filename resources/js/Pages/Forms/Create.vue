@@ -9,6 +9,9 @@ import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     dropdowns: Object,
+    box_no: String,
+    next_sr_no: Number,
+    sr_no_count: Number,
 });
 
 function generateTrackingCode() {
@@ -35,8 +38,8 @@ const form = useForm({
     client_name: '',
     contact: '',
     client_cnic: '',
-    box_no: generateBoxNo(),
-    sr_no: '',
+    box_no: props.box_no ?? generateBoxNo(),
+    sr_no: props.next_sr_no ?? '',
     submitted_by: '',
     submitter_cnic: '',
     deposite_slip_no: '',
@@ -122,7 +125,8 @@ function submit() {
         <template #header>
             <div class="page-header">
                 <div>
-                    <h1 class="page-title">Create Form</h1>
+                    <h1 class="page-title">Create Form  <strong style="margin-left: 20px;">Box Count: {{ sr_no_count }}</strong></h1>
+                        
                 </div>
                 <Link :href="route('forms.index')" class="btn btn-primary">
                     Back to List
@@ -260,6 +264,18 @@ function submit() {
                         />
                         <InputError :message="form.errors.box_no" />
                     </div>
+
+                    <div class="lg:col-span-1">
+                        <InputLabel value="Sr No" />
+                        <input
+                            class="input"
+                            type="number"
+                            v-model.number="form.sr_no"
+                            readonly
+                            style="background-color: #f5f5f5;"
+                        />
+                        <InputError :message="form.errors.sr_no" />
+                    </div>
                     
                     <div class="lg:col-span-1">
                         <InputLabel value="Plot Price" />
@@ -326,16 +342,6 @@ function submit() {
                         <InputError :message="form.errors.client_cnic" />
                     </div>
 
-                    <div class="lg:col-span-1">
-                        <InputLabel value="Sr No" />
-                        <input
-                            class="input"
-                            type="number"
-                            v-model.number="form.sr_no"
-                            placeholder="0"
-                        />
-                        <InputError :message="form.errors.sr_no" />
-                    </div>
 
                     <div class="lg:col-span-1">
                         <InputLabel value="Submitted By" />
@@ -384,9 +390,9 @@ function submit() {
                 </div>
 
                 <div class="mt-8 flex justify-end gap-3 border-t border-dark-200 pt-6">
-                    <SecondaryButton :href="route('forms.index')">
+                    <Link :href="route('forms.index')" class="btn btn-default" style="background: cadetblue; color: #fff">
                         Cancel
-                    </SecondaryButton>
+                    </Link>
                     <PrimaryButton :disabled="form.processing">
                         <span v-if="form.processing">Saving...</span>
                         <span v-else>Save Form</span>
@@ -405,5 +411,32 @@ function submit() {
 .api-spinner {
     animation: spin 0.8s linear infinite;
     color: #667eea;
+}
+.box-sr-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+    padding: 0.3rem 0.65rem;
+    background: linear-gradient(135deg, #667eea18 0%, #764ba218 100%);
+    border: 1px solid #667eea44;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: #667eea;
+    font-weight: 500;
+}
+.box-sr-badge strong {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #764ba2;
+}
+.badge-icon {
+    font-size: 1rem;
+}
+.sr-no-hint {
+    margin-top: 0.25rem;
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-style: italic;
 }
 </style>

@@ -40,7 +40,7 @@ class FormService
                     ->orWhere('tracking_code', 'like', '%' . $filters['search'] . '%');
             });
         }
-
+        // dd($filters);
         // Filter by society
         if (! empty($filters['society_id'])) {
             $query->where('society_id', $filters['society_id']);
@@ -97,6 +97,11 @@ class FormService
         // Auto-generate box_no from the current date (DDMMYY) if not supplied
         if (empty($data['box_no'])) {
             $data['box_no'] = $this->generateBoxNo();
+        }
+
+        // Auto-generate sr_no: next sequential number for this box_no
+        if (empty($data['sr_no'])) {
+            $data['sr_no'] = $this->getNextSrNo($data['box_no']);
         }
 
         // Derive QR code value from the tracking code
@@ -159,6 +164,27 @@ class FormService
         ]);
 
         return $form->fresh();
+    }
+
+    // ─── Public Helpers ───────────────────────────────────────────────────────
+
+    /**
+     * Get the next sr_no for the given box_no.
+     * Starts at 1 and increments by 1 for each existing entry under the same box_no.
+     */
+    public function getNextSrNo(string $boxNo): int
+    {
+        $max = Form::where('box_no', $boxNo)->max('sr_no');
+
+        return $max ? $max + 1 : 1;
+    }
+
+    /**
+     * Count how many Sr Nos already exist for the given box_no.
+     */
+    public function getBoxSrNoCount(string $boxNo): int
+    {
+        return Form::where('box_no', $boxNo)->count();
     }
 
     // ─── Private Helpers ──────────────────────────────────────────────────────

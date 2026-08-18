@@ -17,7 +17,7 @@ const props = defineProps({
 
 const filterForm = useForm({
     search: props.filters?.search ?? '',
-    block_id: props.filters?.block_id ?? '',
+    society_id: props.filters?.society_id ?? '',
     form_type: props.filters?.form_type ?? '',
     size: props.filters?.size ?? '',
 });
@@ -43,7 +43,7 @@ function applyFilters() {
 
 function resetFilters() {
     filterForm.search = '';
-    filterForm.block_id = '';
+    filterForm.society_id = '';
     filterForm.form_type = '';
     filterForm.size = '';
     filterForm.get(route('forms.index'), {
@@ -117,7 +117,7 @@ function statusBadge(status) {
 
                 <!-- Block -->
                 <div class="min-w-[130px]">
-                    <select class="input text-sm" v-model="filterForm.block_id">
+                    <select class="input text-sm" v-model="filterForm.society_id">
                         <option value="">All Blocks</option>
                         <option v-for="block in dropdowns.blocks" :key="block.id" :value="String(block.id)">
                             {{ block.name }}

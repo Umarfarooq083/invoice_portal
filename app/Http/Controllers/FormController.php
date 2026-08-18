@@ -61,8 +61,13 @@ class FormController extends Controller
      */
     public function create(): Response
     {
+        $boxNo = now()->format('dmy');
+
         return Inertia::render('Forms/Create', [
-            'dropdowns' => $this->formService->getDropdownOptions(),
+            'dropdowns'   => $this->formService->getDropdownOptions(),
+            'box_no'      => $boxNo,
+            'next_sr_no'  => $this->formService->getNextSrNo($boxNo),
+            'sr_no_count' => $this->formService->getBoxSrNoCount($boxNo),
         ]);
     }
 

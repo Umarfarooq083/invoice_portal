@@ -1,168 +1,335 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, useForm,Link } from '@inertiajs/vue3';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import Modal from '@/Components/Modal.vue';
+import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     form: Object,
 });
 
-const deleteModal = ref({ show: false });
-const deleteForm = useForm({});
-
-function confirmDelete() {
-    deleteModal.value = { show: true };
-}
-
-function destroyForm() {
-    deleteForm.delete(route('forms.destroy', props.form.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            deleteModal.value = { show: false };
-        },
-    });
-}
-
 function formatCurrency(value) {
     if (!value) return '-';
     return new Intl.NumberFormat('en-PK', {
-        style: 'currency',
-        currency: 'PKR',
         maximumFractionDigits: 0,
     }).format(value);
 }
 
-const detailRows = computed(() => [
-    { label: 'Plot Price', value: formatCurrency(props.form.plot_price) },
-    { label: 'Form No', value: props.form.form_no },
-    { label: 'Tracking Code', value: props.form.tracking_code },
-    { label: 'Down Payment', value: formatCurrency(props.form.down_payment) },
-    { label: 'App Type', value: props.form.app_type?.name ?? '-' },
-    { label: 'Block', value: props.form.block?.name ?? '-' },
-    { label: 'App Size', value: props.form.size ?? '-' },
-    { label: 'Phase Id', value: props.form.phase?.name ?? '-' },
-    { label: 'Client Name', value: props.form.client_name },
-    { label: 'Contact', value: props.form.contact },
-    { label: 'Client Cnic', value: props.form.client_cnic },
-    { label: 'Box No', value: props.form.box_no },
-    { label: 'Sr No', value: props.form.sr_no },
-    { label: 'Submitted By', value: props.form.submitted_by ?? '-' },
-    { label: 'Submitter Cnic', value: props.form.submitter_cnic ?? '-' },
-    { label: 'Deposite Slip No', value: props.form.deposite_slip_no },
-    { label: 'Dealer Id', value: props.form.dealer_id ?? '-' },
-    { label: 'Submitted By (User)', value: props.form.user?.name ?? '-' },
-    { label: 'QR Code', value: props.form.qr_code ?? '-' },
-    { label: 'Created At', value: props.form.created_at ? new Date(props.form.created_at).toLocaleString() : '-' },
-]);
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
+const printPage = () => {
+    window.print();
+};
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <template #header>
-            <div class="page-header">
-                <div>
-                    <h1 class="page-title">Form #{{ form.form_no }}</h1>
-                    <p class="page-subtitle">
-                        Tracking Code:
-                        <span class="font-semibold text-dark-900">{{ form.tracking_code }}</span>
-                    </p>
-                </div>
-                <div class="flex gap-3">
-                    <SecondaryButton :href="route('forms.edit', form.id)">
-                        Edit
-                    </SecondaryButton>
-                    <DangerButton @click="confirmDelete">
-                        Delete
-                    </DangerButton>
-                    <Link :href="route('forms.index')" class="btn btn-primary">
-                        Back to List
-                    </Link>
-                </div>
+    <Head title="Form Receipt" />
+    
+    <div class="receipt-container">
+        <div class="top-bar hide-on-print">
+            <Link :href="route('forms.index')">&#8592; Back</Link>
+            <button @click="printPage" class="print-btn">Print</button>
+        </div>
+
+        <!-- ===================== CUSTOMER COPY ===================== -->
+        <div class="receipt">
+            <div class="receipt-title">
+                <h1>Form Submission Receipt</h1>
+                <div class="copy-label">(Customer Copy)</div>
             </div>
-        </template>
 
-        <Head title="Form Details" />
+            <div class="section-header">
+                <div>OS</div>
+                <div class="center">Application Details</div>
+                <div>Tracking Id: {{ form.tracking_code ?? '-' }}</div>
+            </div>
 
-        <div class="card p-6 mb-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h2 class="text-lg font-semibold text-dark-900 mb-4">Form Information</h2>
-                    <dl class="grid grid-cols-[140px_1fr] gap-3">
-                        <div
-                            v-for="row in detailRows"
-                            :key="row.label"
-                            class="contents"
-                        >
-                            <dt class="text-sm text-dark-500">{{ row.label }}</dt>
-                            <dd class="text-sm font-medium text-dark-900 break-words">
-                                {{ row.value }}
-                            </dd>
-                        </div>
-                    </dl>
+            <table class="details-table">
+                <tr>
+                    <td class="label" style="width:12%;">Form No:</td>
+                    <td style="width:33%;">{{ form.form_no ?? '-' }}</td>
+                    <td class="label col-divider" style="width:10%;">Name:</td>
+                    <td>{{ form.client_name ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Reg No:</td>
+                    <td>{{ form.qr_code ?? form.deposite_slip_no ?? '-' }}</td>
+                    <td class="label col-divider">CNIC:</td>
+                    <td>{{ form.client_cnic ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">App Size:</td>
+                    <td>{{ form.app_type?.name ?? '' }}{{ form.app_type && form.size ? '-' : '' }}{{ form.size ?? '-' }}</td>
+                    <td class="label col-divider">Contact:</td>
+                    <td>{{ form.contact ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Down Payment:</td>
+                    <td>{{ formatCurrency(form.down_payment) }}</td>
+                    <td class="label col-divider">Address:</td>
+                    <td>{{ form.address ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Reg Price:</td>
+                    <td>{{ formatCurrency(form.plot_price) }}</td>
+                    <td class="col-divider"></td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <div class="disclaimer">
+                This Receipt is subject to confirmation of Payment clearance from Bank/Accounts Dept. Management reserve the right to accept/reject the registration application.
+            </div>
+
+            <div class="submit-row">
+                <div><span>Submitted By:</span><span class="underline-blank">{{ form.submitted_by ?? '' }}</span></div>
+                <div><span>Dealer:</span><span class="underline-blank">{{ form.dealer_id ?? '' }}</span></div>
+                <div><span>Dealer Cnic:</span><span class="underline-blank"></span></div>
+                <div><span>Submitter Cnic:</span><span class="underline-blank">{{ form.submitter_cnic ?? '' }}</span></div>
+            </div>
+
+            <div class="officer-box">
+                <div class="officer-row">
+                    <div><span class="label">Officer Name:</span> <u>{{ form.user?.name ?? 'Admin' }}</u></div>
+                    <div><span class="label">DownPayment:</span> <u>{{ formatCurrency(form.down_payment) }}</u></div>
+                    <div><span class="label">Office:</span> <u>{{ form.office?.name ?? 'Head Office' }}</u></div>
                 </div>
-
-                <div class="space-y-4">
-                    <h2 class="text-lg font-semibold text-dark-900">Status</h2>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-dark-50">
-                            <span class="text-sm text-dark-600">Live Status</span>
-                            <span
-                                :class="form.is_create_live ? 'badge badge-success' : 'badge badge-secondary'"
-                            >
-                                {{ form.is_create_live ? 'Live' : 'Pending' }}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-dark-50">
-                            <span class="text-sm text-dark-600">Member Transfer</span>
-                            <span
-                                :class="form.is_member_transfer ? 'badge badge-success' : 'badge badge-secondary'"
-                            >
-                                {{ form.is_member_transfer ? 'Yes' : 'No' }}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div
-                        v-if="form.qr_code"
-                        class="p-4 rounded-xl bg-dark-50 text-center"
-                    >
-                        <p class="text-sm text-dark-500 mb-2">QR Code</p>
-                        <p class="font-mono text-xs text-dark-900 break-all">
-                            {{ form.qr_code }}
-                        </p>
-                    </div>
+                <div class="officer-row">
+                    <div><span class="label">Date:</span> <u>{{ formatDate(form.created_at) }}</u></div>
+                    <div><span class="label">Reg Price:</span> <u>{{ formatCurrency(form.plot_price) }}</u></div>
+                    <div><span class="label">Signature:</span><span class="underline-blank"></span></div>
                 </div>
             </div>
         </div>
 
-        <Modal
-            :show="deleteModal.show"
-            @close="deleteModal = { show: false }"
-        >
-            <div class="p-6">
-                <h2 class="text-lg font-bold text-dark-900 mb-4">Confirm Delete</h2>
-                <p class="text-dark-600 mb-6">
-                    Are you sure you want to delete form
-                    <span class="font-semibold">#{{ form.form_no }}</span>?
-                    This action cannot be undone.
-                </p>
-                <div class="flex justify-end gap-3">
-                    <SecondaryButton @click="deleteModal = { show: false }">
-                        Cancel
-                    </SecondaryButton>
-                    <DangerButton
-                        :disabled="deleteForm.processing"
-                        @click="destroyForm"
-                    >
-                        <span v-if="deleteForm.processing">Deleting...</span>
-                        <span v-else>Delete</span>
-                    </DangerButton>
+        <!-- ===================== OFFICE COPY ===================== -->
+        <div class="receipt">
+            <div class="receipt-title">
+                <h1>Form Submission Receipt</h1>
+                <div class="copy-label">(Office Copy)</div>
+            </div>
+
+            <div class="section-header">
+                <div>OS</div>
+                <div class="center">Application Details</div>
+                <div>Tracking Id: {{ form.tracking_code ?? '-' }}</div>
+            </div>
+
+            <table class="details-table">
+                <tr>
+                    <td class="label" style="width:12%;">Form No:</td>
+                    <td style="width:33%;">{{ form.form_no ?? '-' }}</td>
+                    <td class="label col-divider" style="width:10%;">Name:</td>
+                    <td>{{ form.client_name ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Reg No:</td>
+                    <td>{{ form.qr_code ?? form.deposite_slip_no ?? '-' }}</td>
+                    <td class="label col-divider">CNIC:</td>
+                    <td>{{ form.client_cnic ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">App Size:</td>
+                    <td>{{ form.app_type?.name ?? '' }}{{ form.app_type && form.size ? '-' : '' }}{{ form.size ?? '-' }}</td>
+                    <td class="label col-divider">Contact:</td>
+                    <td>{{ form.contact ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Down Payment:</td>
+                    <td>{{ formatCurrency(form.down_payment) }}</td>
+                    <td class="label col-divider">Address:</td>
+                    <td>{{ form.address ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Reg Price:</td>
+                    <td>{{ formatCurrency(form.plot_price) }}</td>
+                    <td class="col-divider"></td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <div class="disclaimer">
+                This Receipt is subject to confirmation of Payment clearance from Bank/Accounts Dept. Management reserve the right to accept/reject the registration application.
+            </div>
+
+            <div class="submit-row">
+                <div><span>Submitted By:</span><span class="underline-blank">{{ form.submitted_by ?? '' }}</span></div>
+                <div><span>Dealer:</span><span class="underline-blank">{{ form.dealer_id ?? '' }}</span></div>
+                <div><span>Dealer Cnic:</span><span class="underline-blank"></span></div>
+                <div><span>Submitter Cnic:</span><span class="underline-blank">{{ form.submitter_cnic ?? '' }}</span></div>
+            </div>
+
+            <div class="officer-box">
+                <div class="officer-row">
+                    <div><span class="label">Officer Name:</span> <u>{{ form.user?.name ?? 'Admin' }}</u></div>
+                    <div><span class="label">DownPayment:</span> <u>{{ formatCurrency(form.down_payment) }}</u></div>
+                    <div><span class="label">Office:</span> <u>{{ form.office?.name ?? 'Head Office' }}</u></div>
+                </div>
+                <div class="officer-row">
+                    <div><span class="label">Date:</span> <u>{{ formatDate(form.created_at) }}</u></div>
+                    <div><span class="label">Reg Price:</span> <u>{{ formatCurrency(form.plot_price) }}</u></div>
+                    <div><span class="label">Signature:</span><span class="underline-blank"></span></div>
                 </div>
             </div>
-        </Modal>
-    </AuthenticatedLayout>
+        </div>
+
+        <hr class="footer-line">
+    </div>
 </template>
+
+<style scoped>
+.receipt-container {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #000;
+  background: #fff;
+  margin: 20px auto;
+  padding: 20px 30px;
+  min-height: 100vh;
+  max-width: 800px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+.top-bar a, .print-btn {
+  color: #1a56db;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.print-btn:hover, .top-bar a:hover {
+  text-decoration: underline;
+}
+.receipt {
+  margin-bottom: 25px;
+}
+.receipt-title {
+  text-align: center;
+  position: relative;
+  margin: 10px 0 4px 0;
+}
+.receipt-title h1 {
+  font-size: 22px;
+  font-weight: normal;
+  margin: 0;
+  display: inline-block;
+}
+.copy-label {
+  position: relative;
+  float: right;
+  top: -28px;
+  font-weight: bold;
+  font-size: 13px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  font-weight: normal;
+}
+.section-header .center {
+  flex: 1;
+  text-align: center;
+}
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000;
+}
+.details-table td {
+  border: none;
+  padding: 4px 8px;
+  vertical-align: top;
+  font-size: 13px;
+}
+.details-table tr {
+  border-bottom: 1px dotted #000;
+}
+.details-table tr:last-child {
+  border-bottom: none;
+}
+.label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+.col-divider {
+  border-left: 1px solid #000;
+}
+.disclaimer {
+  font-size: 12px;
+  margin: 6px 0 14px 0;
+}
+.submit-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+.submit-row span {
+  font-weight: bold;
+}
+.underline-blank {
+  border-bottom: 1px solid #000;
+  display: inline-block;
+  min-width: 140px;
+  margin-left: 4px;
+  text-align: center;
+  font-weight: normal !important;
+}
+.officer-box {
+  border: 1px solid #000;
+  padding: 12px;
+}
+.officer-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+.officer-row:last-child {
+  margin-bottom: 4px;
+}
+.officer-row .label {
+  font-weight: bold;
+}
+.officer-row u {
+  font-weight: normal;
+  text-decoration: underline;
+}
+hr.footer-line {
+  border: none;
+  border-top: 1px solid #000;
+  margin-top: 30px;
+}
+
+@media print {
+  .hide-on-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .receipt-container {
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+  }
+}
+</style>

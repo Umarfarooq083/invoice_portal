@@ -218,7 +218,7 @@
 
     /* ===== PAGE HEADERS ===== */
     .page-header {
-        @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6;
+        @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ;
     }
     .page-title { @apply text-lg font-semibold text-slate-800; }
     .page-subtitle { @apply text-sm text-slate-400; }
