@@ -81,7 +81,7 @@ function statusBadge(status) {
         <!-- Page title row -->
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h1 class="text-lg font-semibold text-slate-800">Invoices</h1>
+                <h1 class="text-lg font-semibold text-slate-800">Forms</h1>
                 <!-- <p class="text-xs text-slate-400 mt-0.5">Manage all application forms</p> -->
             </div>
             <Link :href="route('forms.create')" class="btn btn-primary">
@@ -101,7 +101,7 @@ function statusBadge(status) {
                         <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <input class="input pl-9 text-sm" type="text" v-model="filterForm.search" placeholder="Search invoices..." />
+                        <input class="input pl-9 text-sm" type="text" v-model="filterForm.search" placeholder="Search Forms..." />
                     </div>
                 </div>
 

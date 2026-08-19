@@ -1,11 +1,32 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 
+function debounce(fn, delay) {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn(...args), delay);
+    };
+}
+
 const props = defineProps({
     invoices: Object,
+    filters: Object,
 });
+
+const search = ref(props.filters?.search || '');
+const plot_type = ref(props.filters?.plot_type || '');
+
+watch([search, plot_type], debounce(([newSearch, newPlotType]) => {
+    router.get(route('invoices.index'), { search: newSearch, plot_type: newPlotType }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    });
+}, 300));
 </script>
 
 <template>
@@ -22,6 +43,29 @@ const props = defineProps({
                 </svg>
                 New Invoice
             </Link>
+        </div>
+
+        <div class="card mb-4">
+            <div class="flex flex-wrap items-end gap-3 p-4">
+                <!-- Search -->
+                <div class="flex-1 min-w-[200px]">
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input class="input pl-9 text-sm" type="text" v-model="search" placeholder="Search invoices by Reg No, Name, Tracking..." />
+                    </div>
+                </div>
+
+                <!-- Plot Type -->
+                <div class="min-w-[150px]">
+                    <select class="input text-sm" v-model="plot_type">
+                        <option value="">All Plot Types</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div class="card overflow-hidden">

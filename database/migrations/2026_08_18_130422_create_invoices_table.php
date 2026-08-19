@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('dealer_phone');
             $table->tinyInteger('transfer_status')->default(0);
             $table->text('collection_address')->nullable();
-            $table->integer('downpayment')->nullable();
+            $table->bigInteger('downpayment')->nullable();
             $table->integer('payment_plan_id')->nullable();
             $table->integer('payment_plan_plot_price')->default(0);
             $table->integer('payment_plan_live_id')->nullable();
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->integer('legder_plot_price')->default(0);
             $table->integer('sum_payment')->default(0);
             $table->integer('received_downpayment')->default(0);
-            $table->integer('plot_price')->default(0);
+            $table->bigInteger('plot_price')->default(0);
             $table->date('printing_date')->nullable();
             $table->tinyInteger('is_deleted')->default(0);
             $table->integer('deleted_by')->nullable();

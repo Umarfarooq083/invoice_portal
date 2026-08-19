@@ -96,7 +96,7 @@ function isActive(routeName) {
                 desktopSidebarClass,
                 'fixed inset-y-0 left-0 z-50 w-60 transform transition-all duration-300 ease-in-out lg:translate-x-0',
             ]"
-            style="background: #ffffff; border-right: 1px solid #eef0f4;"
+            style="background: #1c2333; border-right: 1px solid #eef0f4;"
             aria-label="Sidebar"
         >
             <div class="flex h-full flex-col">
@@ -123,9 +123,9 @@ function isActive(routeName) {
                             {{ section.label }}
                         </p>
                         <div v-else class="mt-4 mb-1 border-t border-slate-100" />
-
+<!-- #363636 -->
                         <template v-for="item in section.items" :key="item.name">
-                            <Link
+                            <Link style="color: #cbd5e1;"
                                 :href="item.href"
                                 :class="[
                                     isActive(item.routeName) ? 'sidebar-link-active' : 'sidebar-link',

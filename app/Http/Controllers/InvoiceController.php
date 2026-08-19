@@ -11,10 +11,30 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = Invoice::latest()->paginate(10);
-        return Inertia::render('Invoices/Index', ['invoices' => $invoices]);
+        $query = Invoice::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('reg_no', 'like', "%{$search}%")
+                  ->orWhere('client_name', 'like', "%{$search}%")
+                  ->orWhere('tracking_code', 'like', "%{$search}%")
+                  ->orWhere('client_cnic', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('plot_type')) {
+            $query->where('plot_type', $request->plot_type);
+        }
+
+        $invoices = $query->latest()->paginate(10)->withQueryString();
+
+        return Inertia::render('Invoices/Index', [
+            'invoices' => $invoices,
+            'filters' => $request->only(['search', 'plot_type'])
+        ]);
     }
 
     /**
@@ -49,7 +69,7 @@ class InvoiceController extends Controller
             'address' => 'nullable|string',
             'client_cnic' => 'nullable|string|max:255',
             'box_no' => 'required|numeric',
-            'sr_no' => 'required|string|max:255',
+            'sr_no' => 'required|max:255',
             'tracking_code' => 'required|string|max:255',
             'received_by' => 'required|numeric',
             'dealer_phone' => 'required|string|max:255',
