@@ -5,6 +5,31 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Modal from '@/Components/Modal.vue';
+import { ref, computed } from 'vue';
+
+const showPreview = ref(false);
+
+function formatCurrency(value) {
+    if (!value) return '-';
+    return new Intl.NumberFormat('en-PK', {
+        maximumFractionDigits: 0,
+    }).format(value);
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
+const printPage = () => {
+    window.print();
+};
 
 const props = defineProps({
     box_no: {
@@ -47,6 +72,87 @@ const submit = () => {
     <AuthenticatedLayout>
 
         <Head title="Create Invoice" />
+
+        <Modal :show="showPreview" @close="showPreview = false" maxWidth="4xl">
+            <div class="receipt-container" id="print-section">
+                <div class="top-bar hide-on-print">
+                    <button @click="showPreview = false" class="back-btn">&#8592; Back to Form</button>
+                    <!-- <button @click="printPage" class="print-btn">Print</button> -->
+                </div>
+
+                <!-- ===================== CUSTOMER COPY ===================== -->
+                <div class="receipt">
+                    <div class="receipt-title">
+                        <h1>Invoice / Receipt</h1>
+                        <div class="copy-label">(Customer Copy)</div>
+                    </div>
+
+                    <div class="section-header">
+                        <div>Box No: {{ form.box_no ?? '-' }}</div>
+                        <div class="center">Invoice Details</div>
+                        <div>Sr No: {{ form.sr_no ?? '-' }}</div>
+                    </div>
+
+                    <table class="details-table">
+                        <tr>
+                            <td class="label" style="width:15%;">Reg No:</td>
+                            <td style="width:30%;">{{ form.reg_no ?? '-' }}</td>
+                            <td class="label col-divider" style="width:15%;">Name:</td>
+                            <td>{{ form.client_name ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Plot Size:</td>
+                            <td>{{ form.size ?? '-' }}</td>
+                            <td class="label col-divider">CNIC:</td>
+                            <td>{{ form.client_cnic ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Plot Category:</td>
+                            <td>{{ form.plot_type ?? '-' }}</td>
+                            <td class="label col-divider">Contact:</td>
+                            <td>{{ form.contact ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Down Payment:</td>
+                            <td>{{ formatCurrency(form.downpayment) }}</td>
+                            <td class="label col-divider">Address:</td>
+                            <td>{{ form.address ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Plot Price:</td>
+                            <td>{{ formatCurrency(form.plot_price) }}</td>
+                            <td class="col-divider"></td>
+                            <td></td>
+                        </tr>
+                    </table>
+
+                    <div class="disclaimer">
+                        This Receipt is subject to confirmation of Payment clearance from Bank/Accounts Dept.
+                    </div>
+
+                    <div class="submit-row">
+                        <div><span>Dealer ID:</span><span class="underline-blank">{{ form.dealer_id ?? '' }}</span>
+                        </div>
+                        <div><span>Dealer Phone:</span><span class="underline-blank">{{ form.dealer_phone ?? ''
+                        }}</span></div>
+                        <div><span>Tracking Code:</span><span class="underline-blank">{{ form.tracking_code ?? ''
+                        }}</span></div>
+                    </div>
+
+                    <div class="officer-box">
+                        <div class="officer-row">
+                            <div><span class="label">Submitted By (User ID):</span> <u>{{ form.received_by ?? '-' }}</u>
+                            </div>
+                            <div><span class="label">Submitter CNIC:</span> <u>{{ form.submitter_cnic ?? '-' }}</u>
+                            </div>
+                            <div><span class="label">Date:</span> <u>{{ formatDate(new Date()) }}</u></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="footer-line">
+            </div>
+        </Modal>
 
         <div class="max-w-9xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
@@ -162,7 +268,7 @@ const submit = () => {
 
                         <!-- BOX NO -->
                         <div>
-                            <InputLabel for="box_no" value="Total Plot Price" class="label" />
+                            <InputLabel for="box_no" value="BOX NO" class="label" />
                             <div class="relative mt-1">
                                 <span
                                     class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-semibold">PKR</span>
@@ -175,7 +281,7 @@ const submit = () => {
 
                         <!-- SR NO -->
                         <div>
-                            <InputLabel for="sr_no" value="Total Plot Price" class="label" />
+                            <InputLabel for="sr_no" value="SR NO" class="label" />
                             <div class="relative mt-1">
                                 <span
                                     class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-semibold">PKR</span>
@@ -297,6 +403,11 @@ const submit = () => {
                             Cancel
                         </Link>
 
+                        <button type="button" @click="showPreview = true"
+                            class="btn-secondary btn-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200">
+                            Preview
+                        </button>
+
                         <button type="submit" :disabled="form.processing" class="btn-primary btn-lg min-w-[160px]">
                             <svg v-if="form.processing" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none"
                                 viewBox="0 0 24 24">
@@ -319,3 +430,214 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #print-section,
+    #print-section * {
+        visibility: visible;
+    }
+
+    #print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        max-height: none !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}
+</style>
+
+<style scoped>
+.receipt-container {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #000;
+    background: #fff;
+    padding: 40px;
+    width: 100%;
+    max-width: 750px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    max-height: 85vh;
+    overflow-y: auto;
+    min-height: 890px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    border-radius: 8px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.top-bar .back-btn,
+.print-btn {
+    color: #1a56db;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.print-btn:hover,
+.top-bar .back-btn:hover {
+    text-decoration: underline;
+}
+
+.receipt {
+    margin-bottom: 25px;
+}
+
+.receipt-title {
+    text-align: center;
+    position: relative;
+    margin: 10px 0 4px 0;
+}
+
+.receipt-title h1 {
+    font-size: 22px;
+    font-weight: normal;
+    margin: 0;
+    display: inline-block;
+}
+
+.copy-label {
+    position: relative;
+    float: right;
+    top: -28px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    font-weight: normal;
+}
+
+.section-header .center {
+    flex: 1;
+    text-align: center;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+}
+
+.details-table td {
+    border: none;
+    padding: 4px 8px;
+    vertical-align: top;
+    font-size: 13px;
+}
+
+.details-table tr {
+    border-bottom: 1px dotted #000;
+}
+
+.details-table tr:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.col-divider {
+    border-left: 1px solid #000;
+}
+
+.disclaimer {
+    font-size: 12px;
+    margin: 6px 0 14px 0;
+}
+
+.submit-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 13px;
+}
+
+.submit-row span {
+    font-weight: bold;
+}
+
+.underline-blank {
+    border-bottom: 1px solid #000;
+    display: inline-block;
+    min-width: 140px;
+    margin-left: 4px;
+    text-align: center;
+    font-weight: normal !important;
+}
+
+.officer-box {
+    border: 1px solid #000;
+    padding: 12px;
+}
+
+.officer-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    font-size: 13px;
+}
+
+.officer-row:last-child {
+    margin-bottom: 4px;
+}
+
+.officer-row .label {
+    font-weight: bold;
+}
+
+.officer-row u {
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+hr.footer-line {
+    border: none;
+    border-top: 1px solid #000;
+    margin-top: 30px;
+}
+
+@media print {
+    .hide-on-print {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .receipt-container {
+        padding: 0;
+        margin: 0;
+        min-height: auto;
+    }
+}
+</style>
