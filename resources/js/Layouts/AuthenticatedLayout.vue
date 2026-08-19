@@ -96,19 +96,19 @@ function isActive(routeName) {
                 desktopSidebarClass,
                 'fixed inset-y-0 left-0 z-50 w-60 transform transition-all duration-300 ease-in-out lg:translate-x-0',
             ]"
-            style="background: #1c2333; border-right: 1px solid #eef0f4;"
+            style="background: #1c2431;"
             aria-label="Sidebar"
         >
             <div class="flex h-full flex-col">
 
                 <!-- Logo -->
-                <div class="flex h-16 shrink-0 items-center gap-2.5 px-5 border-b border-slate-100">
+                <div class="flex h-16 shrink-0 items-center gap-2.5 px-5 border-b border-[#2a3447]">
                     <Link :href="route('dashboard')" class="flex items-center gap-2.5 min-w-0">
-                        <div class="h-9 w-9 flex-shrink-0 flex items-center justify-center rounded-xl"
-                            style="background: linear-gradient(135deg, #6d5dfc 0%, #48cfad 100%);">
-                            <ApplicationLogo class="h-5 w-5 fill-white" />
+                        <div class="h-9 w-9 flex-shrink-0 flex items-center justify-center rounded-lg"
+                            style="background: #3b71ca;">
+                             <ApplicationLogo class="h-5 w-5 fill-white" />
                         </div>
-                        <span v-if="!sidebarCollapsed" class="text-base font-bold text-slate-800 truncate">
+                        <span v-if="!sidebarCollapsed" class="text-base font-bold text-white truncate">
                             Invoice Portal
                         </span>
                     </Link>
@@ -122,10 +122,10 @@ function isActive(routeName) {
                             class="sidebar-section">
                             {{ section.label }}
                         </p>
-                        <div v-else class="mt-4 mb-1 border-t border-slate-100" />
-<!-- #363636 -->
+                        <div v-else class="mt-4 mb-1 border-t border-[#2a3447]" />
+
                         <template v-for="item in section.items" :key="item.name">
-                            <Link style="color: #cbd5e1;"
+                            <Link
                                 :href="item.href"
                                 :class="[
                                     isActive(item.routeName) ? 'sidebar-link-active' : 'sidebar-link',
@@ -137,7 +137,7 @@ function isActive(routeName) {
                             >
                                 <NavIcon
                                     :name="item.icon"
-                                    :className="'h-5 w-5 flex-shrink-0 ' + (isActive(item.routeName) ? 'text-primary-600' : 'text-slate-400')"
+                                    :className="'h-5 w-5 flex-shrink-0'"
                                 />
                                 <span v-if="!sidebarCollapsed" class="truncate">{{ item.name }}</span>
                             </Link>
@@ -146,20 +146,20 @@ function isActive(routeName) {
                 </nav>
 
                 <!-- Bottom user card -->
-                <div class="p-3 border-t border-slate-100">
+                <div class="p-3 border-t border-[#2a3447]">
                     <div :class="[
                         sidebarCollapsed ? 'justify-center' : '',
-                        'flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition-colors cursor-pointer',
+                        'flex items-center gap-3 rounded-xl p-2.5 hover:bg-[#2b374c] transition-colors cursor-pointer',
                     ]">
                         <div class="h-8 w-8 flex-shrink-0 rounded-full flex items-center justify-center text-white text-sm font-semibold"
-                            style="background: linear-gradient(135deg, #6d5dfc, #48cfad);">
+                            style="background: #3b71ca;">
                             {{ page.props.auth.user?.name?.charAt(0).toUpperCase() }}
                         </div>
                         <div v-if="!sidebarCollapsed" class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-slate-700 truncate">
+                            <p class="text-sm font-semibold text-white truncate">
                                 {{ page.props.auth.user?.name }}
                             </p>
-                            <p class="text-xs text-slate-400 truncate">
+                            <p class="text-xs text-[#8b99b0] truncate">
                                 {{ page.props.auth.user?.email }}
                             </p>
                         </div>
