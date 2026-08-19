@@ -19,16 +19,16 @@ class InvoiceController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('reg_no', 'like', "%{$search}%")
-                  ->orWhere('client_name', 'like', "%{$search}%")
-                  ->orWhere('tracking_code', 'like', "%{$search}%")
-                  ->orWhere('client_cnic', 'like', "%{$search}%");
+                    ->orWhere('client_name', 'like', "%{$search}%")
+                    ->orWhere('tracking_code', 'like', "%{$search}%")
+                    ->orWhere('client_cnic', 'like', "%{$search}%");
             });
         }
 
         if ($request->filled('plot_type')) {
             $query->where('plot_type', $request->plot_type);
         }
-
+        $query->with('block', 'user');
         $invoices = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Invoices/Index', [
@@ -82,7 +82,7 @@ class InvoiceController extends Controller
             $validated['file_id'] = 0; // Temporary default since it's an integer column with no default in DB
         }
         if (!isset($validated['dealer_name'])) {
-            $validated['dealer_name'] = ''; 
+            $validated['dealer_name'] = '';
         }
 
         Invoice::create($validated);

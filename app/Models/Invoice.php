@@ -11,4 +11,13 @@ class Invoice extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'society_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'received_by', 'id');
+    }
 }

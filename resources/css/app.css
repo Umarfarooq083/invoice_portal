@@ -320,6 +320,7 @@
     .sidebar-link:hover {
         background: rgba(255, 255, 255, 0.05);
         color: #eef2f6;
+        font-size: 15px;
     }
 
     .sidebar-link-active {
