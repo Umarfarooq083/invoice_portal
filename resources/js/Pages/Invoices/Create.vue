@@ -43,6 +43,10 @@ const props = defineProps({
     dealers: {
         type: Array,
         default: () => []
+    },
+    blocks: {
+        type: Array,
+        default: () => []
     }
 });
 
@@ -65,6 +69,7 @@ const form = useForm({
     dealer_phone: '',
     submitter_cnic: '',
     dealer_id: '',
+    society_id: '',
 });
 
 function formatCnic(e, field) {
@@ -239,6 +244,19 @@ const submit = () => {
                             <TextInput id="plot_type" type="text" class="mt-1" v-model="form.plot_type"
                                 placeholder="Residential / Commercial" />
                             <InputError class="mt-1.5" :message="form.errors.plot_type" />
+                        </div>
+                        <!-- Block (Society ID) -->
+                        <div>
+                            <InputLabel for="society_id" value="Block" class="label" />
+                            <select id="society_id"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                v-model="form.society_id">
+                                <option value="" disabled>Select a Block</option>
+                                <option v-for="block in blocks" :key="block.id" :value="block.id">
+                                    {{ block.name }}
+                                </option>
+                            </select>
+                            <InputError class="mt-1.5" :message="form.errors.society_id" />
                         </div>
                         <!-- Downpayment -->
                         <div>

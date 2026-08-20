@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Dealer;
+use App\Models\Block;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -48,11 +49,13 @@ class InvoiceController extends Controller
         $nextSrNo = $maxSrNo ? $maxSrNo + 1 : 1;
 
         $dealers = Dealer::orderBy('name')->get(['id', 'name']);
+        $blocks = Block::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Invoices/Create', [
             'box_no' => $boxNo,
             'next_sr_no' => $nextSrNo,
             'dealers' => $dealers,
+            'blocks' => $blocks,
         ]);
     }
 
@@ -79,6 +82,7 @@ class InvoiceController extends Controller
             'dealer_phone' => 'required|string|max:255',
             'submitter_cnic' => 'nullable|string|max:255',
             'dealer_id' => 'nullable|numeric',
+            'society_id' => 'nullable|numeric|exists:blocks,id',
             'file_id' => 'nullable|numeric', // Just in case, to prevent DB error since file_id is required in DB but they didn't ask for it
         ]);
 
