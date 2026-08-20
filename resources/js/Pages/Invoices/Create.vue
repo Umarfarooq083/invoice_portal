@@ -39,6 +39,10 @@ const props = defineProps({
     next_sr_no: {
         type: Number,
         required: true
+    },
+    dealers: {
+        type: Array,
+        default: () => []
     }
 });
 
@@ -63,6 +67,11 @@ const form = useForm({
     dealer_id: '',
 });
 
+function formatCnic(e, field) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,5})(\d{0,7})(\d{0,1})/);
+    form[field] = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
+}
+
 const submit = () => {
     form.post(route('invoices.store'));
 };
@@ -72,7 +81,6 @@ const submit = () => {
     <AuthenticatedLayout>
 
         <Head title="Create Invoice" />
-
         <Modal :show="showPreview" @close="showPreview = false" maxWidth="4xl">
             <div class="receipt-container" id="print-section">
                 <div class="top-bar hide-on-print">
@@ -80,7 +88,6 @@ const submit = () => {
                     <!-- <button @click="printPage" class="print-btn">Print</button> -->
                 </div>
 
-                <!-- ===================== CUSTOMER COPY ===================== -->
                 <div class="receipt">
                     <div class="receipt-title">
                         <h1>Invoice / Receipt</h1>
@@ -134,9 +141,9 @@ const submit = () => {
                         <div><span>Dealer ID:</span><span class="underline-blank">{{ form.dealer_id ?? '' }}</span>
                         </div>
                         <div><span>Dealer Phone:</span><span class="underline-blank">{{ form.dealer_phone ?? ''
-                        }}</span></div>
+                                }}</span></div>
                         <div><span>Tracking Code:</span><span class="underline-blank">{{ form.tracking_code ?? ''
-                        }}</span></div>
+                                }}</span></div>
                     </div>
 
                     <div class="officer-box">
@@ -169,12 +176,9 @@ const submit = () => {
                         <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Create Invoice</h1>
                     </div>
                 </div>
-
-
             </div>
 
             <form @submit.prevent="submit" class="space-y-8 animate-slide-up stagger-1">
-
                 <!-- Section 1: Property & Registration Details -->
                 <div class="card overflow-hidden">
                     <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -208,7 +212,6 @@ const submit = () => {
                             </div>
                             <InputError class="mt-1.5" :message="form.errors.search_open_reg" />
                         </div>
-
                         <!-- Reg No -->
                         <div>
                             <InputLabel for="reg_no" value="Reg Number" class="label" />
@@ -216,7 +219,6 @@ const submit = () => {
                                 placeholder="REG-10492" />
                             <InputError class="mt-1.5" :message="form.errors.reg_no" />
                         </div>
-
                         <!-- Security Code -->
                         <div>
                             <InputLabel for="security_code" value="Security Code" class="label" />
@@ -224,7 +226,6 @@ const submit = () => {
                                 placeholder="SEC-XXXX" />
                             <InputError class="mt-1.5" :message="form.errors.security_code" />
                         </div>
-
                         <!-- Size -->
                         <div>
                             <InputLabel for="size" value="Plot Size" class="label" />
@@ -232,7 +233,6 @@ const submit = () => {
                                 placeholder="5 Marla, 10 Marla" />
                             <InputError class="mt-1.5" :message="form.errors.size" />
                         </div>
-
                         <!-- Plot Type -->
                         <div>
                             <InputLabel for="plot_type" value="Plot Category" class="label" />
@@ -240,7 +240,6 @@ const submit = () => {
                                 placeholder="Residential / Commercial" />
                             <InputError class="mt-1.5" :message="form.errors.plot_type" />
                         </div>
-
                         <!-- Downpayment -->
                         <div>
                             <InputLabel for="downpayment" value="Downpayment" class="label" />
@@ -252,7 +251,6 @@ const submit = () => {
                             </div>
                             <InputError class="mt-1.5" :message="form.errors.downpayment" />
                         </div>
-
                         <!-- Total Plot Price -->
                         <div>
                             <InputLabel for="plot_price" value="Total Plot Price" class="label" />
@@ -265,7 +263,6 @@ const submit = () => {
                             </div>
                             <InputError class="mt-1.5" :message="form.errors.plot_price" />
                         </div>
-
                         <!-- BOX NO -->
                         <div>
                             <InputLabel for="box_no" value="BOX NO" class="label" />
@@ -278,7 +275,6 @@ const submit = () => {
                             </div>
                             <InputError class="mt-1.5" :message="form.errors.box_no" />
                         </div>
-
                         <!-- SR NO -->
                         <div>
                             <InputLabel for="sr_no" value="SR NO" class="label" />
@@ -291,8 +287,6 @@ const submit = () => {
                             </div>
                             <InputError class="mt-1.5" :message="form.errors.sr_no" />
                         </div>
-
-
                     </div>
 
                     <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -317,7 +311,6 @@ const submit = () => {
                                 placeholder="Muhammad Ali" />
                             <InputError class="mt-1.5" :message="form.errors.client_name" />
                         </div>
-
                         <!-- Contact -->
                         <div>
                             <InputLabel for="contact" value="Phone Number" class="label" />
@@ -325,15 +318,13 @@ const submit = () => {
                                 placeholder="+92 300 1234567" />
                             <InputError class="mt-1.5" :message="form.errors.contact" />
                         </div>
-
                         <!-- Client CNIC -->
                         <div>
                             <InputLabel for="client_cnic" value="Client CNIC" class="label" />
-                            <TextInput id="client_cnic" type="text" class="mt-1" v-model="form.client_cnic"
-                                placeholder="35201-1234567-1" />
+                            <TextInput id="client_cnic" type="text" class="mt-1 font-mono" v-model="form.client_cnic"
+                                @input="formatCnic($event, 'client_cnic')" placeholder="35201-1234567-1" />
                             <InputError class="mt-1.5" :message="form.errors.client_cnic" />
                         </div>
-
                         <!-- Address -->
                         <div class="md:col-span-2 lg:col-span-3">
                             <InputLabel for="address" value="Residential Address" class="label" />
@@ -365,7 +356,6 @@ const submit = () => {
                                 placeholder="TRK-99201" required />
                             <InputError class="mt-1.5" :message="form.errors.tracking_code" />
                         </div>
-
                         <!-- Submitted By ID -->
                         <div>
                             <InputLabel for="received_by" value="Submitted By (User ID) *" class="label" />
@@ -373,23 +363,27 @@ const submit = () => {
                                 placeholder="User ID #" required />
                             <InputError class="mt-1.5" :message="form.errors.received_by" />
                         </div>
-
                         <!-- Submitter CNIC -->
                         <div>
                             <InputLabel for="submitter_cnic" value="Submitter CNIC" class="label" />
-                            <TextInput id="submitter_cnic" type="text" class="mt-1" v-model="form.submitter_cnic"
+                            <TextInput id="submitter_cnic" type="text" class="mt-1 font-mono"
+                                v-model="form.submitter_cnic" @input="formatCnic($event, 'submitter_cnic')"
                                 placeholder="35201-7654321-9" />
                             <InputError class="mt-1.5" :message="form.errors.submitter_cnic" />
                         </div>
-
                         <!-- Dealer ID -->
                         <div>
                             <InputLabel for="dealer_id" value="Dealer ID" class="label" />
-                            <TextInput id="dealer_id" type="number" class="mt-1" v-model="form.dealer_id"
-                                placeholder="DLR-0042" />
+                            <select id="dealer_id"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                v-model="form.dealer_id">
+                                <option value="" disabled>Select a Dealer</option>
+                                <option v-for="dealer in dealers" :key="dealer.id" :value="dealer.id">
+                                    {{ dealer.name }} ({{ dealer.id }})
+                                </option>
+                            </select>
                             <InputError class="mt-1.5" :message="form.errors.dealer_id" />
                         </div>
-
                         <!-- Dealer Phone -->
                         <div>
                             <InputLabel for="dealer_phone" value="Dealer Phone *" class="label" />
@@ -402,7 +396,6 @@ const submit = () => {
                         <Link :href="route('invoices.index')" class="btn-secondary btn-lg">
                             Cancel
                         </Link>
-
                         <button type="button" @click="showPreview = true"
                             class="btn-secondary btn-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200">
                             Preview
@@ -420,12 +413,8 @@ const submit = () => {
                             <span>{{ form.processing ? 'Saving...' : 'Save Invoice' }}</span>
                         </button>
                     </div>
-
                 </div>
-
                 <!-- Form Action Buttons -->
-
-
             </form>
         </div>
     </AuthenticatedLayout>
@@ -456,7 +445,6 @@ const submit = () => {
     }
 }
 </style>
-
 <style scoped>
 .receipt-container {
     font-family: Arial, Helvetica, sans-serif;

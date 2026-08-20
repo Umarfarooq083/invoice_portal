@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Dealer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -46,9 +47,12 @@ class InvoiceController extends Controller
         $maxSrNo = Invoice::where('box_no', $boxNo)->max('sr_no');
         $nextSrNo = $maxSrNo ? $maxSrNo + 1 : 1;
 
+        $dealers = Dealer::orderBy('name')->get(['id', 'name']);
+
         return Inertia::render('Invoices/Create', [
             'box_no' => $boxNo,
             'next_sr_no' => $nextSrNo,
+            'dealers' => $dealers,
         ]);
     }
 

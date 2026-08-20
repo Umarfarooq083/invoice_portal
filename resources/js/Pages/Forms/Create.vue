@@ -46,6 +46,11 @@ const form = useForm({
     dealer_id: '',
 });
 
+function formatCnic(e, field) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,5})(\d{0,7})(\d{0,1})/);
+    form[field] = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
+}
+
 // API lookup state
 const apiLoading = ref(false);
 const apiError = ref('');
@@ -126,7 +131,7 @@ function submit() {
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Create Form <strong style="margin-left: 20px;">Box Count: {{ sr_no_count
-                            }}</strong></h1>
+                    }}</strong></h1>
 
                 </div>
                 <Link :href="route('forms.index')" class="btn btn-primary">
@@ -142,7 +147,7 @@ function submit() {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Block" />
+                        <InputLabel value="Block *" />
                         <select class="input" v-model.number="form.society_id">
                             <option value="">Select an Option</option>
                             <option v-for="block in dropdowns.blocks" :key="block.id" :value="block.id">
@@ -177,7 +182,7 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="App Type" />
+                        <InputLabel value="App Type *" />
                         <select class="input" v-model.number="form.reg_type">
                             <option value="">Select an Option</option>
                             <option v-for="type in dropdowns.app_types" :key="type.id" :value="type.id">
@@ -188,14 +193,14 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Form No" />
+                        <InputLabel value="Form No *" />
                         <input class="input" type="text" v-model="form.form_no" placeholder="Enter form no" readonly
                             disabled />
                         <InputError :message="form.errors.form_no" />
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Tracking Code" />
+                        <InputLabel value="Tracking Code *" />
                         <input class="input" type="text" v-model="form.tracking_code" placeholder="Auto-generated"
                             readonly style="background-color: #f5f5f5;" />
                         <InputError :message="form.errors.tracking_code" />
@@ -220,14 +225,14 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Box No" />
+                        <InputLabel value="Box No *" />
                         <input class="input" type="text" v-model="form.box_no" placeholder="Auto-generated" readonly
                             style="background-color: #f5f5f5;" />
                         <InputError :message="form.errors.box_no" />
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Sr No" />
+                        <InputLabel value="Sr No *" />
                         <input class="input" type="number" v-model.number="form.sr_no" readonly
                             style="background-color: #f5f5f5;" />
                         <InputError :message="form.errors.sr_no" />
@@ -240,18 +245,18 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Down Payment" />
+                        <InputLabel value="Down Payment *" />
                         <input class="input" type="number" v-model.number="form.down_payment" placeholder="0" />
                         <InputError :message="form.errors.down_payment" />
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Client Name" />
+                        <InputLabel value="Client Name *" />
                         <input class="input" type="text" v-model="form.client_name" placeholder="Enter client name" />
                         <InputError :message="form.errors.client_name" />
                     </div>
                     <div class="lg:col-span-1">
-                        <InputLabel value="Address" />
+                        <InputLabel value="Address *" />
                         <input class="input" type="text" v-model="form.address" placeholder="Enter Address" />
                         <InputError :message="form.errors.address" />
                     </div>
@@ -263,21 +268,23 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Client Cnic" />
-                        <input class="input" type="text" v-model="form.client_cnic" placeholder="XXXXX-XXXXXXX-XX" />
+                        <InputLabel value="Client Cnic *" />
+                        <input class="input font-mono" type="text" v-model="form.client_cnic"
+                            @input="formatCnic($event, 'client_cnic')" placeholder="XXXXX-XXXXXXX-X" />
                         <InputError :message="form.errors.client_cnic" />
                     </div>
 
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Submitted By" />
+                        <InputLabel value="Submitted By *" />
                         <input class="input" type="text" v-model="form.submitted_by" placeholder="Enter name" />
                         <InputError :message="form.errors.submitted_by" />
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Submitter Cnic" />
-                        <input class="input" type="text" v-model="form.submitter_cnic" placeholder="XXXXX-XXXXXXX-XX" />
+                        <InputLabel value="Submitter Cnic *" />
+                        <input class="input font-mono" type="text" v-model="form.submitter_cnic"
+                            @input="formatCnic($event, 'submitter_cnic')" placeholder="XXXXX-XXXXXXX-X" />
                         <InputError :message="form.errors.submitter_cnic" />
                     </div>
 
