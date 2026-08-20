@@ -18,7 +18,7 @@ const props = defineProps({
 const filterForm = useForm({
     search: props.filters?.search ?? '',
     society_id: props.filters?.society_id ?? '',
-    form_type: props.filters?.form_type ?? '',
+    reg_type: props.filters?.reg_type ?? '',
     size: props.filters?.size ?? '',
 });
 
@@ -44,7 +44,7 @@ function applyFilters() {
 function resetFilters() {
     filterForm.search = '';
     filterForm.society_id = '';
-    filterForm.form_type = '';
+    filterForm.reg_type = '';
     filterForm.size = '';
     filterForm.get(route('forms.index'), {
         preserveState: true,
@@ -76,6 +76,7 @@ function statusBadge(status) {
 
 <template>
     <AuthenticatedLayout>
+
         <Head title="Forms" />
 
         <!-- Page title row -->
@@ -94,20 +95,23 @@ function statusBadge(status) {
 
         <div class="card mb-4">
             <div class="flex flex-wrap items-end gap-3 p-4">
-            
+
                 <!-- Search -->
                 <div class="flex-1 min-w-[200px]">
                     <div class="relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <input class="input pl-9 text-sm" type="text" v-model="filterForm.search" placeholder="Search Forms..." />
+                        <input class="input pl-9 text-sm" type="text" v-model="filterForm.search"
+                            placeholder="Search Forms..." />
                     </div>
                 </div>
 
                 <!-- App Type -->
                 <div class="min-w-[130px]">
-                    <select class="input text-sm" v-model="filterForm.form_type">
+                    <select class="input text-sm" v-model="filterForm.reg_type">
                         <option value="">All Types</option>
                         <option v-for="type in dropdowns.app_types" :key="type.id" :value="String(type.id)">
                             {{ type.name }}
@@ -177,20 +181,24 @@ function statusBadge(status) {
                                 {{ form?.client_name }}
                             </td>
                             <td class="text-xs text-slate-400">
-                                {{ form?.client_cnic }}    
+                                {{ form?.client_cnic }}
                             </td>
                             <td class="text-slate-500 text-sm">{{ form?.tracking_code }}</td>
                             <td class="text-slate-500 text-sm">{{ form?.size }}</td>
                             <td class="text-slate-500 text-sm">{{ form?.box_no }}</td>
                             <td>
-                                <span class="text-sm font-semibold text-slate-700">{{ formatCurrency(form?.plot_price) }}</span>
+                                <span class="text-sm font-semibold text-slate-700">{{ formatCurrency(form?.plot_price)
+                                }}</span>
                             </td>
-                            <td class="text-slate-500 text-sm">{{ form?.dealer_name ?? '-' }}</td>
-                            <td class="text-slate-500 text-sm">{{ form?.form_type ?? '-' }}</td>
+                            <td class="text-slate-500 text-sm">{{ form?.dealer?.name ?? '-' }}</td>
+                            <td class="text-slate-500 text-sm">{{ form?.app_type?.name ?? '-' }}</td>
                             <td class="text-slate-500 text-sm">{{ form?.block?.name }}</td>
                             <td class="text-slate-500 text-sm">{{ form?.user?.name }}</td>
                             <td>
-                                {{ form.created_at ? new Date(form.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-' }}
+                                {{ form.created_at ? new Date(form.created_at).toLocaleDateString('en-US', {
+                                    month:
+                                        'short', day: 'numeric', year: 'numeric'
+                                }) : '-' }}
                             </td>
                             <td class="text-right">
                                 <div class="flex justify-end gap-1">
@@ -198,8 +206,10 @@ function statusBadge(status) {
                                         class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:bg-primary-50 hover:text-primary-600 transition-colors"
                                         title="View">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
                                     </a>
                                     <!-- Edit -->
@@ -229,7 +239,8 @@ function statusBadge(status) {
             <div v-if="!forms.data || forms.data.length === 0" class="text-center py-16">
                 <div class="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
                     <svg class="h-7 w-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 <p class="text-sm font-medium text-slate-500">No forms found</p>
@@ -246,16 +257,14 @@ function statusBadge(status) {
         </div>
     </AuthenticatedLayout>
 
-    <Modal
-        :show="deleteModal.show"
-        @close="deleteModal = { show: false, form: null }"
-    >
+    <Modal :show="deleteModal.show" @close="deleteModal = { show: false, form: null }">
         <div class="p-6">
             <div class="flex items-center gap-3 mb-4">
                 <div class="h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0"
                     style="background: #fee2e2;">
                     <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </div>
                 <div>
@@ -271,10 +280,7 @@ function statusBadge(status) {
                 <SecondaryButton @click="deleteModal = { show: false, form: null }">
                     Cancel
                 </SecondaryButton>
-                <DangerButton
-                    :disabled="deleteForm.processing"
-                    @click="destroyForm"
-                >
+                <DangerButton :disabled="deleteForm.processing" @click="destroyForm">
                     <span v-if="deleteForm.processing">Deleting...</span>
                     <span v-else>Delete</span>
                 </DangerButton>

@@ -76,6 +76,11 @@ class Form extends Model
         return $this->belongsTo(Block::class, 'society_id', 'id');
     }
 
+    public function dealer()
+    {
+        return $this->belongsTo(Dealer::class, 'dealer_id', 'id');
+    }
+
 
     /**
      * The application type of this form.

@@ -19,6 +19,7 @@ class FormService
         return [
             'blocks' => Block::all(['id', 'name'])->toArray(),
             'app_types' => AppType::all(['id', 'name'])->toArray(),
+            'dealers' => \App\Models\Dealer::all(['id', 'name'])->toArray(),
             'app_sizes' => config('form_options.app_sizes', []),
             'reg_types' => config('form_options.residential_options', []),
         ];
@@ -30,7 +31,6 @@ class FormService
     public function getAllForms(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $query = Form::query();
-
         // Search by client name, CNIC, form number, or tracking code
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -40,7 +40,6 @@ class FormService
                     ->orWhere('tracking_code', 'like', '%' . $filters['search'] . '%');
             });
         }
-        // dd($filters);
         // Filter by society
         if (! empty($filters['society_id'])) {
             $query->where('society_id', $filters['society_id']);
@@ -52,16 +51,15 @@ class FormService
         }
 
         // Filter by form type
-        if (! empty($filters['form_type'])) {
-            $query->where('form_type', $filters['form_type']);
+        if (! empty($filters['reg_type'])) {
+            $query->where('reg_type', $filters['reg_type']);
         }
 
         // Filter by app size
         if (! empty($filters['size'])) {
             $query->where('size', $filters['size']);
         }
-
-        return $query->with(['user', 'block', 'appType'])->latest()->paginate($perPage)->appends(request()->query());
+        return $query->with(['user', 'block', 'appType', 'dealer'])->latest()->paginate($perPage)->appends(request()->query());
     }
 
     /**

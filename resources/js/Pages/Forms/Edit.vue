@@ -248,13 +248,20 @@ function submit() {
                     </div>
 
                     <div class="lg:col-span-1">
-                        <InputLabel value="Dealer Id" />
-                        <input
+                        <InputLabel value="Dealer" />
+                        <select
                             class="input"
-                            type="number"
                             v-model.number="form.dealer_id"
-                            placeholder="0"
-                        />
+                        >
+                            <option value="">Select a Dealer</option>
+                            <option
+                                v-for="dealer in dropdowns.dealers"
+                                :key="dealer.id"
+                                :value="dealer.id"
+                            >
+                                {{ dealer.name }}
+                            </option>
+                        </select>
                         <InputError :message="form.errors.dealer_id" />
                     </div>
 

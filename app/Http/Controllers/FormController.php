@@ -32,7 +32,7 @@ class FormController extends Controller
             'search',
             'society_id',
             'office_id',
-            'form_type',
+            'reg_type',
             'size',
         ]);
 
