@@ -21,9 +21,10 @@ const navSections = [
     {
         label: 'Management',
         items: [
-            { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Dealers', href: route('dealers.index'), icon: 'users', routeName: 'dealers.index' },
-            { name: 'Invoices', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
+            { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
+            { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
+            { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
         ],
     },
 ];
@@ -39,6 +40,8 @@ const pageTitles = {
     'Dealers/Edit': 'Edit Dealer',
     'Invoices/Index': 'Invoices',
     'Invoices/Create': 'Create Invoice',
+    'Mergers/Index': 'Mergers',
+    'Mergers/Create': 'Create Merger',
 };
 
 const currentPage = computed(() => {

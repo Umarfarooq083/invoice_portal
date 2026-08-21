@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
     // ─── Invoices Routes ───────//
     Route::get('/invoices/fetch-file-data', [\App\Http\Controllers\InvoiceController::class, 'fetchFileData'])->name('invoices.fetch-file-data');
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class)->only(['index', 'create', 'store']);
+    // ─── Mergers Routes ───────//
+    Route::resource('mergers', \App\Http\Controllers\MergerController::class);
 });
 
 require __DIR__ . '/auth.php';
