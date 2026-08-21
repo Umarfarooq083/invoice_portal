@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Dealer;
 use App\Models\Block;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class InvoiceController extends Controller
@@ -96,5 +97,38 @@ class InvoiceController extends Controller
         Invoice::create($validated);
 
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+    }
+
+    /**
+     * Fetch file data from external API
+     */
+    public function fetchFileData(Request $request)
+    {
+        $regNo = $request->query('reg_no');
+        $societyId = $request->query('society_id');
+
+        if (empty($regNo) || empty($societyId)) {
+            return response()->json(['error' => 'reg_no and society_id are required.'], 422);
+        }
+
+        $response = Http::withHeaders([
+            'token' => env('OPEN_INV_BOOKING_TOKEN')
+        ])->timeout(60)->get(
+            env('AWAMI_GREEN_API_BASE_URL') . '/openinvbooking/fetch-file-data',
+            [
+                'reg_no' => $regNo,
+                // 'society_id' => $societyId
+                'society_id' => 14
+            ]
+        );
+
+        if ($response->failed()) {
+            return response()->json(
+                ['error' => 'External API request failed. Status: ' . $response->status()],
+                $response->status()
+            );
+        }
+
+        return response()->json($response->json());
     }
 }

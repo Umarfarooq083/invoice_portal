@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('dealers', \App\Http\Controllers\DealerController::class);
 
     // ─── Invoices Routes ───────//
+    Route::get('/invoices/fetch-file-data', [\App\Http\Controllers\InvoiceController::class, 'fetchFileData'])->name('invoices.fetch-file-data');
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class)->only(['index', 'create', 'store']);
 });
 
