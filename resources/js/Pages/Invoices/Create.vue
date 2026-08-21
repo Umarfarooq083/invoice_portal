@@ -252,7 +252,7 @@ function onSearchKeydown(e) {
                         <div>
                             <InputLabel for="society_id" value="Block" class="label" />
                             <select id="society_id"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                class="input mt-1"
                                 v-model="form.society_id">
                                 <option value="" disabled>Select a Block</option>
                                 <option v-for="block in blocks" :key="block.id" :value="block.id">
@@ -462,9 +462,7 @@ function onSearchKeydown(e) {
                             <!-- Dealer ID -->
                             <div>
                                 <InputLabel for="dealer_id" value="Dealer ID" class="label" />
-                                <select id="dealer_id"
-                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    v-model="form.dealer_id">
+                                <select id="dealer_id" class="input mt-1" v-model="form.dealer_id">
                                     <option value="" disabled>Select a Dealer</option>
                                     <option v-for="dealer in dealers" :key="dealer.id" :value="dealer.id">
                                         {{ dealer.name }} ({{ dealer.id }})

@@ -117,8 +117,8 @@ class InvoiceController extends Controller
             env('AWAMI_GREEN_API_BASE_URL') . '/openinvbooking/fetch-file-data',
             [
                 'reg_no' => $regNo,
-                // 'society_id' => $societyId
-                'society_id' => 14
+                'society_id' => $societyId
+                // 'society_id' => 14
             ]
         );
 
