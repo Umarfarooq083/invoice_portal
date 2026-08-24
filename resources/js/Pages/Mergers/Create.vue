@@ -1,6 +1,6 @@
 <script setup>
 import { Head, useForm, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -23,24 +23,31 @@ const form = useForm({
     client_name: '',
     client_cnic: '',
     app_type: '',
-    payment_plan_plot_price: '',
+    payment_plan_plot_price: 0,
     payment_plan_live_id: '',
-    payment_plan_down_payment: '',
-    ledger_down_payment: '',
-    ledger_plot_price: '',
-    sum_payment: '',
-    received_downpayment: '',
+    payment_plan_down_payment: 0,
+    ledger_down_payment: 0,
+    ledger_plot_price: 0,
+    sum_payment: 0,
+    received_downpayment: 0,
 
     // --- Merge To ---
-    merge_to_no: '',
-    to_security_code: '',
-    to_size: '',
-    merge_app_type: '',
-    ledger_amount: '',
-    merging_fee: '',
-    to_payment_plan_plot_price: '',
-    to_payment_plan_live_id: '',
-    to_payment_plan_down_payment: '',
+    merge_to_details: [
+        {
+            merge_to: '',
+            merge_to_no: '',
+            to_security_code: '',
+            to_size: '',
+            merge_app_type: '',
+            ledger_amount: '',
+            merging_fee: '',
+            to_payment_plan_plot_price: '',
+            to_payment_plan_live_id: '',
+            to_payment_plan_down_payment: '',
+        }
+    ],
+
+    // --- Client Details ---
     box_no: '',
     tracking_code: '',
     dealer_name: '',
@@ -49,7 +56,7 @@ const form = useForm({
 });
 
 const isFetching = ref(false);
-const isFetchingMergeTo = ref(false);
+const isFetchingMergeTo = ref({});
 
 // Computed properties to handle visibility based on block selection
 const selectedBlockName = computed(() => {
@@ -66,6 +73,41 @@ const showTwoExtraDropdowns = computed(() => {
     return selectedBlockName.value === 'Blue World NAC-06' || selectedBlockName.value === 'Down Town';
 });
 
+const fileTypeOptions = computed(() => {
+    if (selectedBlockName.value === 'Awami Greens') {
+        return [
+            { value: '1', label: 'By-name' },
+            { value: '2', label: 'Open' },
+            { value: '3', label: 'Form' }
+        ];
+    } else if (selectedBlockName.value === 'Blue World NAC-06' || selectedBlockName.value === 'Down Town') {
+        return [
+            { value: '2', label: 'Open' }
+        ];
+    }
+    return [];
+});
+
+const mergingTypeOptions = computed(() => {
+    if (selectedBlockName.value === 'Blue World NAC-06') {
+        return [
+            { value: '1', label: 'Commercial' }
+        ];
+    } else if (selectedBlockName.value === 'Down Town') {
+        return [
+            { value: '1', label: 'Open Awami Greens' },
+            { value: '2', label: 'Sector A' },
+            { value: '3', label: 'DT Open Form Merging' }
+        ];
+    }
+    return [];
+});
+
+watch(() => form.society_id, () => {
+    form.sub_option_1 = '';
+    form.sub_option_2 = '';
+});
+
 const fetchFromAppData = () => {
     if (!form.from_app_no) return;
     isFetching.value = true;
@@ -76,13 +118,14 @@ const fetchFromAppData = () => {
     }, 1000);
 };
 
-const fetchMergeToData = () => {
-    if (!form.merge_to_no) return;
-    isFetchingMergeTo.value = true;
-    // Simulate API call for "Merge To No"
+const fetchMergeToData = (index) => {
+    const detail = form.merge_to_details[index];
+    if (!detail.merge_to) return;
+    isFetchingMergeTo.value[index] = true;
+    // Simulate API call for "Merge To"
     setTimeout(() => {
-        isFetchingMergeTo.value = false;
-        console.log("Data fetched for Merge To No: ", form.merge_to_no);
+        isFetchingMergeTo.value[index] = false;
+        console.log("Data fetched for Merge To: ", detail.merge_to, " at index ", index);
     }, 1000);
 };
 
@@ -93,10 +136,32 @@ const onSearchFromKeydown = (e) => {
     }
 };
 
-const onSearchToKeydown = (e) => {
+const onSearchToKeydown = (e, index) => {
+    // alert(form.from_app_no);
     if (e.key === 'Enter') {
         e.preventDefault();
-        fetchMergeToData();
+        fetchMergeToData(index);
+    }
+};
+
+const addMergeToDetail = () => {
+    form.merge_to_details.push({
+        merge_to: '',
+        merge_to_no: '',
+        to_security_code: '',
+        to_size: '',
+        merge_app_type: '',
+        ledger_amount: '',
+        merging_fee: '',
+        to_payment_plan_plot_price: '',
+        to_payment_plan_live_id: '',
+        to_payment_plan_down_payment: '',
+    });
+};
+
+const removeMergeToDetail = (index) => {
+    if (form.merge_to_details.length > 1) {
+        form.merge_to_details.splice(index, 1);
     }
 };
 
@@ -106,7 +171,8 @@ const formatCnic = (e, field) => {
 };
 
 const submit = () => {
-    console.log('Form Submitted', form.data());
+    console.table('Form Submitted', form.data());
+    console.table('Form Submitted', form.data().merge_to_details);
 };
 
 </script>
@@ -115,7 +181,6 @@ const submit = () => {
     <AuthenticatedLayout>
 
         <Head title="Create Merger" />
-
         <div class="max-w-9xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 animate-fade-in">
@@ -135,7 +200,6 @@ const submit = () => {
 
             <form @submit.prevent="submit" class="space-y-8 animate-slide-up stagger-1">
 
-                <!-- Section 1: Block Selection -->
                 <div class="card overflow-hidden">
                     <div class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -152,7 +216,6 @@ const submit = () => {
 
                     <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                        <!-- Main Block Selection -->
                         <div>
                             <InputLabel for="block" value="Select Block" class="label" />
                             <select id="block" class="input mt-1" v-model="form.society_id" required>
@@ -164,25 +227,24 @@ const submit = () => {
                             <InputError class="mt-1.5" :message="form.errors.society_id" />
                         </div>
 
-                        <!-- Shown for Awami Greens (1) AND NAC/Downtown (1st of 2) -->
                         <div v-if="showOneExtraDropdown || showTwoExtraDropdowns">
                             <InputLabel for="sub_option_1" value="Select File Type" class="label" />
                             <select class="input mt-1" v-model="form.sub_option_1">
                                 <option value="" disabled>Select File Type</option>
-                                <option value="1">By-Name</option>
-                                <option value="2">Open</option>
-                                <option value="3">Form</option>
+                                <option v-for="option in fileTypeOptions" :key="option.value" :value="option.value">
+                                    {{ option.label }}
+                                </option>
                             </select>
                             <InputError class="mt-1.5" :message="form.errors.sub_option_1" />
                         </div>
 
-                        <!-- Shown ONLY for NAC/Downtown (2nd of 2) -->
                         <div v-if="showTwoExtraDropdowns">
                             <InputLabel for="sub_option_2" value="Select Merging Type" class="label" />
                             <select id="sub_option_2" class="input mt-1" v-model="form.sub_option_2">
                                 <option value="" disabled>Select option...</option>
-                                <option value="optA">Option A</option>
-                                <option value="optB">Option B</option>
+                                <option v-for="option in mergingTypeOptions" :key="option.value" :value="option.value">
+                                    {{ option.label }}
+                                </option>
                             </select>
                             <InputError class="mt-1.5" :message="form.errors.sub_option_2" />
                         </div>
@@ -207,8 +269,6 @@ const submit = () => {
                         </div>
 
                         <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-
                             <div class="col-span-full lg:col-span-1">
                                 <InputLabel for="registration_no" value="App *" class="label" />
                                 <div class="relative mt-1">
@@ -299,31 +359,31 @@ const submit = () => {
                             <div>
                                 <InputLabel for="ledger_down_payment" value="Ledger Down Payment" class="label" />
                                 <TextInput id="ledger_down_payment" type="number" step="0.01" class="mt-1"
-                                    v-model="form.ledger_down_payment" />
+                                    v-model="form.ledger_down_payment" disabled />
                             </div>
 
                             <div>
                                 <InputLabel for="ledger_plot_price" value="Ledger Plot Price" class="label" />
                                 <TextInput id="ledger_plot_price" type="number" step="0.01" class="mt-1"
-                                    v-model="form.ledger_plot_price" />
+                                    v-model="form.ledger_plot_price" disabled />
                             </div>
 
                             <div>
                                 <InputLabel for="sum_payment" value="Sum Payment" class="label" />
                                 <TextInput id="sum_payment" type="number" step="0.01" class="mt-1"
-                                    v-model="form.sum_payment" />
+                                    v-model="form.sum_payment" disabled />
                             </div>
 
                             <div>
                                 <InputLabel for="received_downpayment" value="Received Downpayment" class="label" />
                                 <TextInput id="received_downpayment" type="number" step="0.01" class="mt-1"
-                                    v-model="form.received_downpayment" />
+                                    v-model="form.received_downpayment" disabled />
                             </div>
                         </div>
                     </div>
 
                     <!-- Section 3: Merge To Details -->
-                    <div class="card overflow-hidden">
+                    <div class="card overflow-hidden mb-8">
                         <div
                             class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -338,86 +398,159 @@ const submit = () => {
                             </div>
                         </div>
 
-                        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="p-6 space-y-6 bg-slate-50/30">
+                            <div v-for="(detail, index) in form.merge_to_details" :key="index"
+                                class="relative rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
 
-                            <!-- Merge To No with Verify -->
-                            <div class="col-span-full lg:col-span-1">
-                                <InputLabel for="merge_to_no" value="Merge To No *" class="label" />
-                                <div class="relative mt-1">
-                                    <span
-                                        class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <!-- Inner Header for each detail -->
+                                <div class="absolute top-4 right-4 flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-md"
+                                        style="color: #2b33f8;">Detail #{{ index + 1 }}</span>
+                                    <button v-if="form.merge_to_details.length > 1" type="button"
+                                        @click="removeMergeToDetail(index)"
+                                        class="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md transition"
+                                        style="color:red" title="Remove Detail">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
-                                    </span>
-                                    <TextInput id="merge_to_no" type="text" class="pl-10 mt-0"
-                                        style="padding-right: 2.5rem;" v-model="form.merge_to_no"
-                                        @keydown="onSearchToKeydown" :disabled="isFetchingMergeTo"
-                                        placeholder="Type and press Enter..." required />
-                                    <span v-if="isFetchingMergeTo"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
-                                        <svg class="animate-spin h-5 w-5 text-indigo-500"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                                        </svg>
-                                    </span>
+                                    </button>
                                 </div>
-                                <InputError class="mt-1.5" :message="form.errors.merge_to_no" />
-                            </div>
 
-                            <div>
-                                <InputLabel for="to_security_code" value="Security Code" class="label" />
-                                <TextInput id="to_security_code" type="text" class="mt-1 bg-slate-50"
-                                    v-model="form.to_security_code" readonly disabled />
-                            </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                                    <!-- Merge To No with Verify -->
+                                    <div class="col-span-full lg:col-span-1">
+                                        <InputLabel :for="'merge_to_' + index" value="Merge To *" class="label" />
+                                        <div class="relative mt-1">
+                                            <span
+                                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </span>
+                                            <TextInput :id="'merge_to_' + index" type="text" class="pl-10 mt-0"
+                                                style="padding-right: 2.5rem;" v-model="detail.merge_to"
+                                                @keydown="onSearchToKeydown($event, index)"
+                                                :disabled="isFetchingMergeTo[index]"
+                                                placeholder="Type and press Enter..." required />
+                                            <span v-if="isFetchingMergeTo[index]"
+                                                class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                                                <svg class="animate-spin h-5 w-5 text-indigo-500"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <InputError class="mt-1.5"
+                                            :message="form.errors[`merge_to_details.${index}.merge_to`]" />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="to_size" value="Size" class="label" />
-                                <TextInput id="to_size" type="text" class="mt-1 bg-slate-50" v-model="form.to_size"
-                                    readonly disabled />
-                            </div>
+                                    <div class="col-span-full lg:col-span-1">
+                                        <InputLabel :for="'merge_to_no_' + index" value="Merge To No *" class="label" />
+                                        <div class="relative mt-1">
+                                            <TextInput :id="'merge_to_no_' + index" type="text" class="pl-10 mt-0"
+                                                style="padding-right: 2.5rem;" v-model="detail.merge_to_no" required />
+                                        </div>
+                                        <InputError class="mt-1.5"
+                                            :message="form.errors[`merge_to_details.${index}.merge_to_no`]" />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="merge_app_type" value="Merge App Type" class="label" />
-                                <TextInput id="merge_app_type" type="text" class="mt-1 bg-slate-50"
-                                    v-model="form.merge_app_type" readonly disabled />
-                            </div>
+                                    <div>
+                                        <InputLabel :for="'to_security_code_' + index" value="Security Code"
+                                            class="label" />
+                                        <TextInput :id="'to_security_code_' + index" type="text"
+                                            class="mt-1 bg-slate-50" v-model="detail.to_security_code" readonly
+                                            disabled />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="ledger_amount" value="Ledger Amount" class="label" />
-                                <TextInput id="ledger_amount" type="number" step="0.01" class="mt-1"
-                                    v-model="form.ledger_amount" />
-                            </div>
+                                    <div>
+                                        <InputLabel :for="'to_size_' + index" value="Size" class="label" />
+                                        <TextInput :id="'to_size_' + index" type="text" class="mt-1 bg-slate-50"
+                                            v-model="detail.to_size" readonly disabled />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="merging_fee" value="Merging Fee" class="label" />
-                                <TextInput id="merging_fee" type="number" step="0.01" class="mt-1"
-                                    v-model="form.merging_fee" />
-                            </div>
+                                    <div>
+                                        <InputLabel :for="'merge_app_type_' + index" value="Merge App Type"
+                                            class="label" />
+                                        <TextInput :id="'merge_app_type_' + index" type="text" class="mt-1 bg-slate-50"
+                                            v-model="detail.merge_app_type" readonly disabled />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="to_payment_plan_plot_price" value="Payment Plan Plot Price"
-                                    class="label" />
-                                <TextInput id="to_payment_plan_plot_price" type="number" step="0.01"
-                                    class="mt-1 bg-slate-50" v-model="form.to_payment_plan_plot_price" readonly
-                                    disabled />
-                            </div>
+                                    <div>
+                                        <InputLabel :for="'ledger_amount_' + index" value="Ledger Amount"
+                                            class="label" />
+                                        <TextInput :id="'ledger_amount_' + index" type="number" step="0.01" class="mt-1"
+                                            v-model="detail.ledger_amount" />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="to_payment_plan_live_id" value="Payment Plan Live ID" class="label" />
-                                <TextInput id="to_payment_plan_live_id" type="text" class="mt-1 bg-slate-50"
-                                    v-model="form.to_payment_plan_live_id" readonly disabled />
-                            </div>
+                                    <div>
+                                        <InputLabel :for="'merging_fee_' + index" value="Merging Fee" class="label" />
+                                        <TextInput :id="'merging_fee_' + index" type="number" step="0.01" class="mt-1"
+                                            v-model="detail.merging_fee" />
+                                    </div>
 
-                            <div>
-                                <InputLabel for="to_payment_plan_down_payment" value="Payment Plan Down Payment"
-                                    class="label" />
-                                <TextInput id="to_payment_plan_down_payment" type="number" step="0.01"
-                                    class="mt-1 bg-slate-50" v-model="form.to_payment_plan_down_payment" readonly
-                                    disabled />
+                                    <div>
+                                        <InputLabel :for="'to_payment_plan_plot_price_' + index"
+                                            value="Payment Plan Plot Price" class="label" />
+                                        <TextInput :id="'to_payment_plan_plot_price_' + index" type="number" step="0.01"
+                                            class="mt-1 bg-slate-50" v-model="detail.to_payment_plan_plot_price"
+                                            readonly disabled />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel :for="'to_payment_plan_live_id_' + index"
+                                            value="Payment Plan Live ID" class="label" />
+                                        <TextInput :id="'to_payment_plan_live_id_' + index" type="text"
+                                            class="mt-1 bg-slate-50" v-model="detail.to_payment_plan_live_id" readonly
+                                            disabled />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel :for="'to_payment_plan_down_payment_' + index"
+                                            value="Payment Plan Down Payment" class="label" />
+                                        <TextInput :id="'to_payment_plan_down_payment_' + index" type="number"
+                                            step="0.01" class="mt-1 bg-slate-50"
+                                            v-model="detail.to_payment_plan_down_payment" readonly disabled />
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Add Button at the bottom of the main card -->
+                        <div class="flex justify-end p-4 border-t border-slate-100 bg-slate-50/50">
+                            <button type="button" @click="addMergeToDetail"
+                                style="background-color: #378737; color: #fff;"
+                                class="btn-secondary flex items-center gap-2 bg-white hover:bg-slate-50">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <!-- Add Another Detail -->
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Client Details -->
+                    <div class="card overflow-hidden">
+                        <div
+                            class="px-8 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white"
+                                    style="background: var(--color-primary);">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-semibold text-slate-800">Client Details</h2>
+                            </div>
+                        </div>
+
+                        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                             <div>
                                 <InputLabel for="box_no" value="Box No" class="label" />
@@ -466,6 +599,7 @@ const submit = () => {
                             </button>
                         </div>
                     </div>
+
                 </template>
             </form>
         </div>
