@@ -17,9 +17,11 @@ class MergerController extends Controller
 
     public function create()
     {
+        $boxNo = now()->format('dmy');
         $blocks = \App\Models\Block::orderBy('name')->get(['id', 'name']);
         return Inertia::render('Mergers/Create', [
-            'blocks' => $blocks
+            'blocks' => $blocks,
+            'box_no' => $boxNo
         ]);
     }
 

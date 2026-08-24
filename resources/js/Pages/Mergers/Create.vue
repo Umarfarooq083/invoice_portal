@@ -8,8 +8,13 @@ import InputError from '@/Components/InputError.vue';
 import axios from 'axios';
 
 const props = defineProps({
-    blocks: Array
+    blocks: Array,
+    box_no: String,
 });
+
+function generateTrackingCode() {
+    return Math.random().toString(36).substring(2, 12).toUpperCase();
+}
 
 const form = useForm({
     society_id: '',
@@ -49,8 +54,8 @@ const form = useForm({
     ],
 
     // --- Client Details ---
-    box_no: '',
-    tracking_code: '',
+    box_no: props.box_no,
+    tracking_code: generateTrackingCode(),
     dealer_name: '',
     dealer_phone: '',
     submitter_cnic: '',
@@ -595,12 +600,12 @@ const submit = () => {
 
                             <div>
                                 <InputLabel for="box_no" value="Box No" class="label" />
-                                <TextInput id="box_no" type="text" class="mt-1" v-model="form.box_no" />
+                                <TextInput id="box_no" type="text" class="mt-1 font-semibold text-slate-900 bg-slate-50" v-model="form.box_no" readonly disabled />
                             </div>
 
                             <div>
                                 <InputLabel for="tracking_code" value="Tracking Code" class="label" />
-                                <TextInput id="tracking_code" type="text" class="mt-1" v-model="form.tracking_code" />
+                                <TextInput id="tracking_code" type="text" class="mt-1 font-mono font-semibold text-slate-900 bg-slate-50" v-model="form.tracking_code" readonly disabled />
                             </div>
 
                             <div>
