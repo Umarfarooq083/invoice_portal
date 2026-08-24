@@ -112,7 +112,7 @@ class InvoiceController extends Controller
         }
 
         $response = Http::withHeaders([
-            'token' => env('OPEN_INV_BOOKING_TOKEN')
+            'token' => env('API_TOKEN')
         ])->timeout(60)->get(
             env('AWAMI_GREEN_API_BASE_URL') . '/openinvbooking/fetch-file-data',
             [

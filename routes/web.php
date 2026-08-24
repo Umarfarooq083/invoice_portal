@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoices/fetch-file-data', [\App\Http\Controllers\InvoiceController::class, 'fetchFileData'])->name('invoices.fetch-file-data');
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class)->only(['index', 'create', 'store']);
     // ─── Mergers Routes ───────//
+    Route::get('/mergers/fetch-main-app-data', [\App\Http\Controllers\MergerController::class, 'fetchMainAppData'])->name('mergers.fetch-main-app-data');
     Route::resource('mergers', \App\Http\Controllers\MergerController::class);
 });
 

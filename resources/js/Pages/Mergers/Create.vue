@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
+import axios from 'axios';
 
 const props = defineProps({
     blocks: Array
@@ -109,13 +110,47 @@ watch(() => form.society_id, () => {
 });
 
 const fetchFromAppData = () => {
-    if (!form.from_app_no) return;
+    if (!form.registration_no || !form.society_id) {
+        alert("Please select Block and enter App No");
+        return;
+    }
     isFetching.value = true;
-    // Simulate API call for "From App No"
-    setTimeout(() => {
-        isFetching.value = false;
-        console.log("Data fetched for From App No: ", form.from_app_no);
-    }, 1000);
+
+    axios.get(route('mergers.fetch-main-app-data'), {
+        params: {
+            reg_no: form.registration_no,
+            society_id: form.society_id,
+            is_open: form.sub_option_1,
+        }
+    })
+        .then(response => {
+            isFetching.value = false;
+            console.log("Data fetched for main App No: ", response.data);
+
+            const data = response.data.data || response.data;
+            if (data && (response.data.success !== false)) {
+                if (data.reg_no) form.from_app_no = data.reg_no;
+                if (data.security_code) form.from_security_code = data.security_code;
+                if (data.plot_size_title) form.from_size = data.plot_size_title;
+                if (data.member_name) form.client_name = data.member_name;
+                if (data.client_cnic) form.client_cnic = data.client_cnic;
+                if (data.plot_type_title) form.app_type = data.plot_type_title;
+                if (data.payment_plan_plot_price) form.payment_plan_plot_price = data.payment_plan_plot_price;
+                if (data.payment_plan_id) form.payment_plan_live_id = data.payment_plan_id;
+                if (data.payment_plan_down_payment) form.payment_plan_down_payment = data.payment_plan_down_payment;
+                if (data.legder_down_payment) form.ledger_down_payment = data.legder_down_payment;
+                if (data.legder_plot_price) form.ledger_plot_price = data.legder_plot_price;
+                if (data.sum_payment) form.sum_payment = data.sum_payment;
+                if (data.received_downpayment) form.received_downpayment = data.received_downpayment;
+            } else {
+                alert(response.data?.message || 'Data not found. Please check the Reg No.');
+            }
+        })
+        .catch(error => {
+            isFetching.value = false;
+            console.error("Error fetching data:", error);
+            alert("Failed to fetch data.");
+        });
 };
 
 const fetchMergeToData = (index) => {
@@ -282,9 +317,15 @@ const submit = () => {
                                     <TextInput id="registration_no" type="text" class="pl-10 mt-0"
                                         style="padding-right: 2.5rem;" v-model="form.registration_no"
                                         @keydown="onSearchFromKeydown" :disabled="isFetching"
-                                        placeholder="Type and press Enter..." required />
-                                    <span v-if="isFetching"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                                        placeholder="Type and press Enter or Click Search..." required />
+                                    <button v-if="!isFetching" type="button" @click="fetchFromAppData"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center text-slate-400 hover:text-indigo-500">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </button>
+                                    <span v-else class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
                                         <svg class="animate-spin h-5 w-5 text-indigo-500"
                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="2">
