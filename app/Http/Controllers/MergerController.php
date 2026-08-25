@@ -56,8 +56,8 @@ class MergerController extends Controller
 
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'Content-Type' => 'application/json',
-            'token' => env('API_TOKEN')
-        ])->get(env('AWAMI_GREEN_API_BASE_URL') . '/mergerinvnew/merger-open-byname-file', [
+            'token' => config('services.awamigreen.token')
+        ])->get(config('services.awamigreen.base_url') . '/mergerinvnew/merger-open-byname-file', [
             'reg_no' => $request->reg_no,
             'society_id' => $request->society_id,
             // 'society_id' => 14,
@@ -75,7 +75,7 @@ class MergerController extends Controller
 
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'Content-Type' => 'application/json',
-            'token' => env('API_TOKEN', '')
+            'token' => config('services.awamigreen.token', '')
         ])->get('http://mi.blueworldcity.com/frontend/web/api/mergerinvnew/get-open-data-reg', [
             'reg_no' => $request->reg_no
         ]);

@@ -84,9 +84,9 @@ class InvoiceController extends Controller
         }
 
         $response = Http::withHeaders([
-            'token' => env('API_TOKEN')
+            'token' => config('services.awamigreen.token')
         ])->timeout(60)->get(
-            env('AWAMI_GREEN_API_BASE_URL') . '/openinvbooking/fetch-file-data',
+            config('services.awamigreen.base_url') . '/openinvbooking/fetch-file-data',
             [
                 'reg_no' => $regNo,
                 'society_id' => $societyId

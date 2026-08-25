@@ -157,7 +157,7 @@ class FormController extends Controller
         }
 
         $response = Http::timeout(60)->get(
-            env('AWAMI_GREEN_API_BASE_URL') . '/awamigreen/get-booking-form-live-data-formno',
+            config('services.awamigreen.base_url') . '/awamigreen/get-booking-form-live-data-formno',
             ['form_no' => $formNo]
         );
 
