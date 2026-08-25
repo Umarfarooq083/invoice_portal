@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -10,7 +10,19 @@ import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     dealers: Object,
+    filters: Object,
 });
+
+const sort = (field) => {
+    let direction = 'asc';
+    if (props.filters?.sort === field && props.filters?.direction === 'asc') {
+        direction = 'desc';
+    }
+    router.get(route('dealers.index'), { ...props.filters, sort: field, direction }, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
 
 const deleteModal = ref({ show: false, dealer: null });
 const deleteForm = useForm({});
@@ -52,11 +64,41 @@ function destroyDealer() {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>CNIC</th>
-                            <th>State</th>
+                            <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    ID
+                                    <span v-if="filters?.sort === 'id'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('name')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Name
+                                    <span v-if="filters?.sort === 'name'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('dealer_phone')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Phone
+                                    <span v-if="filters?.sort === 'dealer_phone'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('cnic')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    CNIC
+                                    <span v-if="filters?.sort === 'cnic'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('dealer_state')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    State
+                                    <span v-if="filters?.sort === 'dealer_state'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th>Actions</th>
                         </tr>
                     </thead>

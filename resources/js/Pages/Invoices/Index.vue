@@ -19,14 +19,25 @@ const props = defineProps({
 
 const search = ref(props.filters?.search || '');
 const plot_type = ref(props.filters?.plot_type || '');
+const sortField = ref(props.filters?.sort || 'id');
+const sortDirection = ref(props.filters?.direction || 'desc');
 
-watch([search, plot_type], debounce(([newSearch, newPlotType]) => {
-    router.get(route('invoices.index'), { search: newSearch, plot_type: newPlotType }, {
+watch([search, plot_type, sortField, sortDirection], debounce(([newSearch, newPlotType, newSortField, newSortDirection]) => {
+    router.get(route('invoices.index'), { search: newSearch, plot_type: newPlotType, sort: newSortField, direction: newSortDirection }, {
         preserveState: true,
         preserveScroll: true,
         replace: true
     });
 }, 300));
+
+function sort(field) {
+    if (sortField.value === field && sortDirection.value === 'asc') {
+        sortDirection.value = 'desc';
+    } else {
+        sortField.value = field;
+        sortDirection.value = 'asc';
+    }
+}
 </script>
 
 <template>
@@ -77,18 +88,78 @@ watch([search, plot_type], debounce(([newSearch, newPlotType]) => {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Client Name</th>
-                            <th>Registration No</th>
-                            <th>Downpayment</th>
-                            <th>Plot Price</th>
-                            <th>Size</th>
-                            <th>Box No</th>
-                            <th>Sr No</th>
-                            <th>Tracking Code</th>
+                            <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    #
+                                    <!-- <span v-if="sortField === 'id'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span> -->
+                                    <!-- <span v-else class="text-xs text-slate-300">↕</span> -->
+                                </div>
+                            </th>
+                            <th @click="sort('client_name')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Client Name
+                                    <span v-if="sortField === 'client_name'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('reg_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Registration No
+                                    <span v-if="sortField === 'reg_no'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('downpayment')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Downpayment
+                                    <span v-if="sortField === 'downpayment'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('plot_price')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Plot Price
+                                    <span v-if="sortField === 'plot_price'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('size')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Size
+                                    <span v-if="sortField === 'size'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('box_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Box No
+                                    <span v-if="sortField === 'box_no'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('sr_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Sr No
+                                    <span v-if="sortField === 'sr_no'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('tracking_code')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Tracking Code
+                                    <span v-if="sortField === 'tracking_code'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th>Block</th>
                             <th>Received By</th>
-                            <th>Booking Date</th>
+                            <th @click="sort('created_at')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Booking Date
+                                    <span v-if="sortField === 'created_at'" class="text-xs">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th>Actions</th>
                         </tr>
                     </thead>

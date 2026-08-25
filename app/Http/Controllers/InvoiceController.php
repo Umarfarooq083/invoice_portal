@@ -32,11 +32,15 @@ class InvoiceController extends Controller
             $query->where('plot_type', $request->plot_type);
         }
         $query->with('block', 'user');
-        $invoices = $query->latest()->paginate(10)->withQueryString();
+
+        $sortField = $request->input('sort', 'id');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $invoices = $query->orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
 
         return Inertia::render('Invoices/Index', [
             'invoices' => $invoices,
-            'filters' => $request->only(['search', 'plot_type'])
+            'filters' => $request->only(['search', 'plot_type', 'sort', 'direction'])
         ]);
     }
 

@@ -9,10 +9,16 @@ use Inertia\Inertia;
 
 class MergerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mergers = Merger::latest()->paginate(10);
-        return Inertia::render('Mergers/Index', ['mergers' => $mergers]);
+        $sortField = $request->input('sort', 'id');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $mergers = Merger::orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+        return Inertia::render('Mergers/Index', [
+            'mergers' => $mergers,
+            'filters' => $request->only(['sort', 'direction'])
+        ]);
     }
 
     public function create()

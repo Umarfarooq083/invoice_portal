@@ -59,7 +59,11 @@ class FormService
         if (! empty($filters['size'])) {
             $query->where('size', $filters['size']);
         }
-        return $query->with(['user', 'block', 'appType', 'dealer'])->latest()->paginate($perPage)->appends(request()->query());
+
+        $sortField = $filters['sort'] ?? 'id';
+        $sortDirection = $filters['direction'] ?? 'desc';
+
+        return $query->with(['user', 'block', 'appType', 'dealer'])->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
 
     /**

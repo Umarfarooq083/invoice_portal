@@ -34,6 +34,8 @@ class FormController extends Controller
             'office_id',
             'reg_type',
             'size',
+            'sort',
+            'direction',
         ]);
 
         $forms = $this->formService->getAllForms($filters);

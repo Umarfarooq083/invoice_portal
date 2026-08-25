@@ -20,6 +20,8 @@ const filterForm = useForm({
     society_id: props.filters?.society_id ?? '',
     reg_type: props.filters?.reg_type ?? '',
     size: props.filters?.size ?? '',
+    sort: props.filters?.sort ?? 'id',
+    direction: props.filters?.direction ?? 'desc',
 });
 
 const deleteModal = ref({ show: false, form: null });
@@ -46,10 +48,19 @@ function resetFilters() {
     filterForm.society_id = '';
     filterForm.reg_type = '';
     filterForm.size = '';
-    filterForm.get(route('forms.index'), {
-        preserveState: true,
-        preserveScroll: true,
-    });
+    filterForm.sort = 'id';
+    filterForm.direction = 'desc';
+    applyFilters();
+}
+
+function sort(field) {
+    if (filterForm.sort === field && filterForm.direction === 'asc') {
+        filterForm.direction = 'desc';
+    } else {
+        filterForm.sort = field;
+        filterForm.direction = 'asc';
+    }
+    applyFilters();
 }
 
 function confirmDelete(form) {
@@ -157,18 +168,66 @@ function statusBadge(status) {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Form No</th>
-                            <th>Client Name</th>
-                            <th>Client Cnic</th>
-                            <th>Tracking Code</th>
-                            <th>Size</th>
-                            <th>Box No</th>
-                            <th>Plot Price</th>
+                            <th @click="sort('form_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Form No
+                                    <span v-if="filterForm.sort === 'form_no'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('client_name')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Client Name
+                                    <span v-if="filterForm.sort === 'client_name'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('client_cnic')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Client Cnic
+                                    <span v-if="filterForm.sort === 'client_cnic'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('tracking_code')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Tracking Code
+                                    <span v-if="filterForm.sort === 'tracking_code'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('size')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Size
+                                    <span v-if="filterForm.sort === 'size'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('box_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Box No
+                                    <span v-if="filterForm.sort === 'box_no'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
+                            <th @click="sort('plot_price')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Plot Price
+                                    <span v-if="filterForm.sort === 'plot_price'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th>Dealer Name</th>
                             <th>Form Type</th>
                             <th>Block</th>
                             <th>Received By</th>
-                            <th>Created At</th>
+                            <th @click="sort('created_at')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Created At
+                                    <span v-if="filterForm.sort === 'created_at'" class="text-xs">{{ filterForm.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>

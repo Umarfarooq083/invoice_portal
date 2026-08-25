@@ -11,10 +11,17 @@ class DealerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $dealers = Dealer::latest()->paginate(10);
-        return Inertia::render('Dealers/Index', ['dealers' => $dealers]);
+        $sortField = $request->input('sort', 'id');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $dealers = Dealer::orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+
+        return Inertia::render('Dealers/Index', [
+            'dealers' => $dealers,
+            'filters' => $request->only(['sort', 'direction'])
+        ]);
     }
 
     /**

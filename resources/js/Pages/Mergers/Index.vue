@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -10,7 +10,19 @@ import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     mergers: Object,
+    filters: Object,
 });
+
+const sort = (field) => {
+    let direction = 'asc';
+    if (props.filters?.sort === field && props.filters?.direction === 'asc') {
+        direction = 'desc';
+    }
+    router.get(route('mergers.index'), { ...props.filters, sort: field, direction }, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
 
 const deleteModal = ref({ show: false, merger: null });
 const deleteForm = useForm({});
@@ -52,7 +64,13 @@ function destroyMerger() {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    ID
+                                    <span v-if="filters?.sort === 'id'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th>Actions</th>
                         </tr>
                     </thead>
