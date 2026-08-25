@@ -3,24 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dealer;
+use App\Services\DealerService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DealerController extends Controller
 {
+    public function __construct(
+        private DealerService $dealerService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'id');
-        $sortDirection = $request->input('direction', 'desc');
-
-        $dealers = Dealer::orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+        $filters = $request->only(['sort', 'direction']);
+        $dealers = $this->dealerService->getAllDealers($filters);
 
         return Inertia::render('Dealers/Index', [
             'dealers' => $dealers,
-            'filters' => $request->only(['sort', 'direction'])
+            'filters' => $filters
         ]);
     }
 
@@ -48,9 +51,7 @@ class DealerController extends Controller
             'dealer_father' => 'nullable|string|max:255',
         ]);
 
-        $validated['created_by'] = auth()->id();
-
-        Dealer::create($validated);
+        $this->dealerService->createDealer($validated);
 
         return redirect()->route('dealers.index')->with('success', 'Dealer created successfully.');
     }
@@ -88,7 +89,7 @@ class DealerController extends Controller
             'dealer_father' => 'nullable|string|max:255',
         ]);
 
-        $dealer->update($validated);
+        $this->dealerService->updateDealer($dealer, $validated);
 
         return redirect()->route('dealers.index')->with('success', 'Dealer updated successfully.');
     }
@@ -98,7 +99,7 @@ class DealerController extends Controller
      */
     public function destroy(Dealer $dealer)
     {
-        $dealer->delete();
+        $this->dealerService->deleteDealer($dealer);
         return redirect()->route('dealers.index')->with('success', 'Dealer deleted successfully.');
     }
 }

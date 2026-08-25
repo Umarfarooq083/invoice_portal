@@ -3,34 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Merger;
+use App\Services\MergerService;
 use Inertia\Inertia;
 
 class MergerController extends Controller
 {
+    public function __construct(
+        private MergerService $mergerService
+    ) {}
+
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'id');
-        $sortDirection = $request->input('direction', 'desc');
-
-        $mergers = Merger::orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+        $filters = $request->only(['sort', 'direction']);
+        $mergers = $this->mergerService->getAllMergers($filters);
+        
         return Inertia::render('Mergers/Index', [
             'mergers' => $mergers,
-            'filters' => $request->only(['sort', 'direction'])
+            'filters' => $filters
         ]);
     }
 
     public function create()
     {
-        $boxNo = now()->format('dmy');
-        $blocks = \App\Models\Block::whereHas('modules', function ($query) {
-            $query->where('module_name', 'merger');
-        })->orderBy('name')->get(['id', 'name']);
-        return Inertia::render('Mergers/Create', [
-            'blocks' => $blocks,
-            'box_no' => $boxNo
-        ]);
+        $data = $this->mergerService->getCreateData();
+        return Inertia::render('Mergers/Create', $data);
     }
 
     public function store(Request $request)

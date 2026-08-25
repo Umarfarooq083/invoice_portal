@@ -5,42 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Dealer;
 use App\Models\Block;
+use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class InvoiceController extends Controller
 {
+    public function __construct(
+        private InvoiceService $invoiceService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Invoice::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('reg_no', 'like', "%{$search}%")
-                    ->orWhere('client_name', 'like', "%{$search}%")
-                    ->orWhere('tracking_code', 'like', "%{$search}%")
-                    ->orWhere('client_cnic', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('plot_type')) {
-            $query->where('plot_type', $request->plot_type);
-        }
-        $query->with('block', 'user');
-
-        $sortField = $request->input('sort', 'id');
-        $sortDirection = $request->input('direction', 'desc');
-
-        $invoices = $query->orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+        $filters = $request->only(['search', 'plot_type', 'sort', 'direction']);
+        $invoices = $this->invoiceService->getAllInvoices($filters);
 
         return Inertia::render('Invoices/Index', [
             'invoices' => $invoices,
-            'filters' => $request->only(['search', 'plot_type', 'sort', 'direction'])
+            'filters' => $filters
         ]);
     }
 
@@ -49,21 +35,8 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $boxNo = now()->format('dmy');
-        $maxSrNo = Invoice::where('box_no', $boxNo)->max('sr_no');
-        $nextSrNo = $maxSrNo ? $maxSrNo + 1 : 1;
-
-        $dealers = Dealer::orderBy('name')->get(['id', 'name']);
-        $blocks = Block::whereHas('modules', function ($query) {
-            $query->where('module_name', 'invoice');
-        })->orderBy('name')->get(['id', 'name']);
-
-        return Inertia::render('Invoices/Create', [
-            'box_no' => $boxNo,
-            'next_sr_no' => $nextSrNo,
-            'dealers' => $dealers,
-            'blocks' => $blocks,
-        ]);
+        $data = $this->invoiceService->getCreateData();
+        return Inertia::render('Invoices/Create', $data);
     }
 
     /**
@@ -93,14 +66,7 @@ class InvoiceController extends Controller
             'file_id' => 'nullable|numeric', // Just in case, to prevent DB error since file_id is required in DB but they didn't ask for it
         ]);
 
-        if (!isset($validated['file_id'])) {
-            $validated['file_id'] = 0; // Temporary default since it's an integer column with no default in DB
-        }
-        if (!isset($validated['dealer_name'])) {
-            $validated['dealer_name'] = '';
-        }
-
-        Invoice::create($validated);
+        $this->invoiceService->createInvoice($validated);
 
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
     }
