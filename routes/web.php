@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('invoices', \App\Http\Controllers\InvoiceController::class)->only(['index', 'create', 'store']);
     // ─── Mergers Routes ───────//
     Route::get('/mergers/fetch-main-app-data', [\App\Http\Controllers\MergerController::class, 'fetchMainAppData'])->name('mergers.fetch-main-app-data');
+    Route::get('/mergers/fetch-merge-to-data', [\App\Http\Controllers\MergerController::class, 'fetchMergeToData'])->name('mergers.fetch-merge-to-data');
     Route::resource('mergers', \App\Http\Controllers\MergerController::class);
 });
 

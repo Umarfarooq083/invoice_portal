@@ -55,4 +55,20 @@ class MergerController extends Controller
 
         return $response->json();
     }
+
+    public function fetchMergeToData(Request $request)
+    {
+        $request->validate([
+            'reg_no' => 'required'
+        ]);
+
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'token' => env('API_TOKEN', '')
+        ])->get('http://mi.blueworldcity.com/frontend/web/api/mergerinvnew/get-open-data-reg', [
+            'reg_no' => $request->reg_no
+        ]);
+
+        return $response->json();
+    }
 }

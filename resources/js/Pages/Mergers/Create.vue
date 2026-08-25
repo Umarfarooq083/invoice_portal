@@ -162,11 +162,35 @@ const fetchMergeToData = (index) => {
     const detail = form.merge_to_details[index];
     if (!detail.merge_to) return;
     isFetchingMergeTo.value[index] = true;
-    // Simulate API call for "Merge To"
-    setTimeout(() => {
-        isFetchingMergeTo.value[index] = false;
-        console.log("Data fetched for Merge To: ", detail.merge_to, " at index ", index);
-    }, 1000);
+
+    axios.get(route('mergers.fetch-merge-to-data'), {
+        params: {
+            reg_no: detail.merge_to,
+        }
+    })
+        .then(response => {
+            isFetchingMergeTo.value[index] = false;
+            console.log("Data fetched for Merge To: ", response.data);
+
+            const data = response.data.data || response.data;
+            if (data && response.data.success !== false) {
+                if (data.reg_no) detail.merge_to_no = data.reg_no;
+                if (data.security_code) detail.to_security_code = data.security_code;
+                if (data.plot_size_title) detail.to_size = data.plot_size_title;
+                if (data.plot_type_title) detail.merge_app_type = data.plot_type_title;
+                if (data.payment_plan_plot_price) detail.to_payment_plan_plot_price = data.payment_plan_plot_price;
+                if (data.payment_plan_id) detail.to_payment_plan_live_id = data.payment_plan_id;
+                if (data.payment_plan_down_payment) detail.to_payment_plan_down_payment = data.payment_plan_down_payment;
+                if (data.legder_plot_price) detail.ledger_amount = data.legder_plot_price;
+            } else {
+                alert(response.data?.message || 'Data not found. Please check the Reg No.');
+            }
+        })
+        .catch(error => {
+            isFetchingMergeTo.value[index] = false;
+            console.error("Error fetching data:", error);
+            alert("Failed to fetch data.");
+        });
 };
 
 const onSearchFromKeydown = (e) => {
