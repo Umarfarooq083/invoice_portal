@@ -17,7 +17,9 @@ class FormService
     public function getDropdownOptions(): array
     {
         return [
-            'blocks' => Block::all(['id', 'name'])->toArray(),
+            'blocks' => Block::whereHas('modules', function ($query) {
+                $query->where('module_name', 'forms');
+            })->orderBy('name')->get(['id', 'name'])->toArray(),
             'app_types' => AppType::all(['id', 'name'])->toArray(),
             'dealers' => \App\Models\Dealer::all(['id', 'name'])->toArray(),
             'app_sizes' => config('form_options.app_sizes', []),

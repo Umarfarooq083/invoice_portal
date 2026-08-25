@@ -24,7 +24,9 @@ class MergerController extends Controller
     public function create()
     {
         $boxNo = now()->format('dmy');
-        $blocks = \App\Models\Block::orderBy('name')->get(['id', 'name']);
+        $blocks = \App\Models\Block::whereHas('modules', function ($query) {
+            $query->where('module_name', 'merger');
+        })->orderBy('name')->get(['id', 'name']);
         return Inertia::render('Mergers/Create', [
             'blocks' => $blocks,
             'box_no' => $boxNo

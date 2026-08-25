@@ -54,7 +54,9 @@ class InvoiceController extends Controller
         $nextSrNo = $maxSrNo ? $maxSrNo + 1 : 1;
 
         $dealers = Dealer::orderBy('name')->get(['id', 'name']);
-        $blocks = Block::orderBy('name')->get(['id', 'name']);
+        $blocks = Block::whereHas('modules', function ($query) {
+            $query->where('module_name', 'invoice');
+        })->orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Invoices/Create', [
             'box_no' => $boxNo,
