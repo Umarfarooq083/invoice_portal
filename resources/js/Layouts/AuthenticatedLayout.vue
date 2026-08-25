@@ -22,6 +22,7 @@ const navSections = [
         label: 'Management',
         items: [
             { name: 'Dealers', href: route('dealers.index'), icon: 'users', routeName: 'dealers.index' },
+            { name: 'Blocks', href: route('blocks.index'), icon: 'document', routeName: 'blocks.index' },
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
             { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
@@ -31,6 +32,9 @@ const navSections = [
 
 const pageTitles = {
     Dashboard:    'Dashboard',
+    'Blocks/Index': 'Blocks',
+    'Blocks/Create': 'Create Block',
+    'Blocks/Edit':  'Edit Block',
     'Forms/Index':  'Forms',
     'Forms/Create': 'Create Form',
     'Forms/Edit':   'Edit Form',
