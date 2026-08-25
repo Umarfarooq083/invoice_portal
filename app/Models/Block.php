@@ -10,4 +10,9 @@ class Block extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    public function modules()
+    {
+        return $this->hasMany(BlockModule::class);
+    }
 }

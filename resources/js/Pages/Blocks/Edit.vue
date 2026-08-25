@@ -10,10 +10,12 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    availableModules: Array,
 });
 
 const form = useForm({
     name: props.block.name,
+    modules: props.block.modules ? props.block.modules.map(m => m.module_name) : [],
 });
 
 function submit() {
@@ -64,6 +66,18 @@ function submit() {
                             <InputLabel for="name" value="Name *" class="label" />
                             <TextInput id="name" type="text" class="mt-1" v-model="form.name" required />
                             <InputError class="mt-1.5" :message="form.errors.name" />
+                        </div>
+
+                        <!-- Modules -->
+                        <div class="md:col-span-2">
+                            <InputLabel value="Assign to Modules" class="label mb-2" />
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <label v-for="module in availableModules" :key="module.value" class="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                    <input type="checkbox" :value="module.value" v-model="form.modules" class="rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500" />
+                                    <span class="text-sm text-slate-700">{{ module.label }}</span>
+                                </label>
+                            </div>
+                            <InputError class="mt-1.5" :message="form.errors.modules" />
                         </div>
                     </div>
 

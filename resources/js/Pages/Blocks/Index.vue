@@ -78,6 +78,7 @@ function destroyBlock() {
                                     <span v-else class="text-xs text-slate-300">↕</span>
                                 </div>
                             </th>
+                            <th class="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Modules</th>
                             <th class="w-24">Actions</th>
                         </tr>
                     </thead>
@@ -86,8 +87,16 @@ function destroyBlock() {
                             <td>
                                 <span class="font-mono text-xs font-semibold">{{ block.id }}</span>
                             </td>
-                            <td class="text-slate-700 font-medium">
+                            <td class="text-slate-700 font-medium py-3 px-4">
                                 {{ block.name }}
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span v-for="mod in block.modules" :key="mod.id" class="px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 capitalize">
+                                        {{ mod.module_name }}
+                                    </span>
+                                    <span v-if="!block.modules || block.modules.length === 0" class="text-xs text-slate-400 italic">None</span>
+                                </div>
                             </td>
                             <td>
                                 <div class="flex gap-1">

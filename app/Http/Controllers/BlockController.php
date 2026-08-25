@@ -16,7 +16,7 @@ class BlockController extends Controller
         $sortField = $request->input('sort', 'id');
         $sortDirection = $request->input('direction', 'desc');
 
-        $blocks = Block::orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
+        $blocks = Block::with('modules')->orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
 
         return Inertia::render('Blocks/Index', [
             'blocks' => $blocks,
@@ -24,12 +24,24 @@ class BlockController extends Controller
         ]);
     }
 
+    private function getAvailableModules()
+    {
+        return [
+            ['value' => 'forms', 'label' => 'Forms'],
+            ['value' => 'invoice', 'label' => 'Invoice'],
+            ['value' => 'merger', 'label' => 'Merger'],
+            ['value' => 'dealer', 'label' => 'Dealer'],
+        ];
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return Inertia::render('Blocks/Create');
+        return Inertia::render('Blocks/Create', [
+            'availableModules' => $this->getAvailableModules()
+        ]);
     }
 
     /**
@@ -39,9 +51,17 @@ class BlockController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'modules' => 'nullable|array',
+            'modules.*' => 'string'
         ]);
 
-        Block::create($validated);
+        $block = Block::create(['name' => $validated['name']]);
+
+        if (isset($validated['modules'])) {
+            foreach ($validated['modules'] as $module) {
+                $block->modules()->create(['module_name' => $module]);
+            }
+        }
 
         return redirect()->route('blocks.index')->with('success', 'Block created successfully.');
     }
@@ -59,7 +79,11 @@ class BlockController extends Controller
      */
     public function edit(Block $block)
     {
-        return Inertia::render('Blocks/Edit', ['block' => $block]);
+        $block->load('modules');
+        return Inertia::render('Blocks/Edit', [
+            'block' => $block,
+            'availableModules' => $this->getAvailableModules()
+        ]);
     }
 
     /**
@@ -69,9 +93,18 @@ class BlockController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'modules' => 'nullable|array',
+            'modules.*' => 'string'
         ]);
 
-        $block->update($validated);
+        $block->update(['name' => $validated['name']]);
+
+        $block->modules()->delete(); // Clear existing modules
+        if (isset($validated['modules'])) {
+            foreach ($validated['modules'] as $module) {
+                $block->modules()->create(['module_name' => $module]);
+            }
+        }
 
         return redirect()->route('blocks.index')->with('success', 'Block updated successfully.');
     }
