@@ -16,4 +16,9 @@ class Block extends Model
     {
         return $this->hasMany(BlockModule::class);
     }
+
+    public function blockRoles()
+    {
+        return $this->belongsToMany(BlockRole::class, 'block_role_assignments');
+    }
 }

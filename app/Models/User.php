@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function blockRoles()
+    {
+        return $this->belongsToMany(BlockRole::class, 'user_block_roles');
+    }
 }

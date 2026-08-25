@@ -6,44 +6,39 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
-    block: {
+    blockRole: {
         type: Object,
         required: true,
     },
-    availableModules: Array,
-    availableRoles: Array,
 });
 
 const form = useForm({
-    name: props.block.name,
-    modules: props.block.modules ? props.block.modules.map(m => m.module_name) : [],
-    roles: props.block.block_roles ? props.block.block_roles.map(r => r.id) : [],
+    name: props.blockRole.name,
 });
 
 function submit() {
-    form.put(route('blocks.update', props.block.id));
+    form.put(route('block-roles.update', props.blockRole.id));
 }
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Edit Block" />
+        <Head title="Edit Block Role" />
 
         <div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-            <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 animate-fade-in">
                 <div>
                     <div class="flex items-center gap-3">
-                        <Link :href="route('blocks.index')"
+                        <Link :href="route('block-roles.index')"
                             class="btn-icon rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 shadow-sm transition">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                         </Link>
-                        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Edit Block</h1>
+                        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Edit Block Role</h1>
                     </div>
-                    <p class="mt-2 text-sm text-slate-500 ml-12">Update block information.</p>
+                    <p class="mt-2 text-sm text-slate-500 ml-12">Update role information.</p>
                 </div>
             </div>
 
@@ -58,48 +53,20 @@ function submit() {
                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                             </div>
-                            <h2 class="text-base font-semibold text-slate-800">Block Information</h2>
+                            <h2 class="text-base font-semibold text-slate-800">Role Information</h2>
                         </div>
                     </div>
 
-                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Name -->
-                        <div class="md:col-span-2">
-                            <InputLabel for="name" value="Name *" class="label" />
+                    <div class="p-8 grid grid-cols-1 gap-6">
+                        <div>
+                            <InputLabel for="name" value="Role Name *" class="label" />
                             <TextInput id="name" type="text" class="mt-1" v-model="form.name" required />
                             <InputError class="mt-1.5" :message="form.errors.name" />
-                        </div>
-
-                        <!-- Modules -->
-                        <div class="md:col-span-2">
-                            <InputLabel value="Assign to Modules" class="label mb-2" />
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <label v-for="module in availableModules" :key="module.value" class="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
-                                    <input type="checkbox" :value="module.value" v-model="form.modules" class="rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500" />
-                                    <span class="text-sm text-slate-700">{{ module.label }}</span>
-                                </label>
-                            </div>
-                            <InputError class="mt-1.5" :message="form.errors.modules" />
-                        </div>
-
-                        <!-- Roles -->
-                        <div class="md:col-span-2">
-                            <InputLabel value="Restrict to Roles (Leave empty for all users)" class="label mb-2" />
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <label v-for="role in availableRoles" :key="role.id" class="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-slate-50">
-                                    <input type="checkbox" :value="role.id" v-model="form.roles" class="rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500" />
-                                    <span class="text-sm text-slate-700">{{ role.name }}</span>
-                                </label>
-                                <div v-if="!availableRoles.length" class="text-sm text-slate-500 col-span-4 p-3 border rounded-lg bg-slate-50">
-                                    No roles available.
-                                </div>
-                            </div>
-                            <InputError class="mt-1.5" :message="form.errors.roles" />
                         </div>
                     </div>
 
                     <div class="flex items-center justify-end gap-4 pt-4 pb-12 pr-8">
-                        <Link :href="route('blocks.index')" class="btn-secondary btn-lg">
+                        <Link :href="route('block-roles.index')" class="btn-secondary btn-lg">
                             Cancel
                         </Link>
                         <button type="submit" :disabled="form.processing" class="btn-primary btn-lg min-w-[160px]">
@@ -107,7 +74,7 @@ function submit() {
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span>{{ form.processing ? 'Saving...' : 'Update Block' }}</span>
+                            <span>{{ form.processing ? 'Saving...' : 'Update Role' }}</span>
                         </button>
                     </div>
                 </div>

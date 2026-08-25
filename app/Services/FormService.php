@@ -19,6 +19,11 @@ class FormService
         return [
             'blocks' => Block::whereHas('modules', function ($query) {
                 $query->where('module_name', 'forms');
+            })->where(function ($query) {
+                $query->whereDoesntHave('blockRoles')
+                      ->orWhereHas('blockRoles', function ($roleQuery) {
+                          $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                      });
             })->orderBy('name')->get(['id', 'name'])->toArray(),
             'app_types' => AppType::all(['id', 'name'])->toArray(),
             'dealers' => \App\Models\Dealer::all(['id', 'name'])->toArray(),

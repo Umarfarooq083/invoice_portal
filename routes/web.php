@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     // ─── Blocks Routes ────────//
     Route::resource('blocks', \App\Http\Controllers\BlockController::class);
+    Route::resource('block-roles', \App\Http\Controllers\BlockRoleController::class);
 
     // ─── Invoices Routes ───────//
     Route::get('/invoices/fetch-file-data', [\App\Http\Controllers\InvoiceController::class, 'fetchFileData'])->name('invoices.fetch-file-data');

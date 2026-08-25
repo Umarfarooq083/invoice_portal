@@ -50,6 +50,11 @@ class InvoiceService
         $dealers = Dealer::orderBy('name')->get(['id', 'name']);
         $blocks = Block::whereHas('modules', function ($query) {
             $query->where('module_name', 'invoice');
+        })->where(function ($query) {
+            $query->whereDoesntHave('blockRoles')
+                  ->orWhereHas('blockRoles', function ($roleQuery) {
+                      $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                  });
         })->orderBy('name')->get(['id', 'name']);
 
         return [

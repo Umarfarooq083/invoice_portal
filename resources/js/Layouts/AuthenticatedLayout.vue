@@ -23,6 +23,7 @@ const navSections = [
         items: [
             { name: 'Dealers', href: route('dealers.index'), icon: 'users', routeName: 'dealers.index' },
             { name: 'Blocks', href: route('blocks.index'), icon: 'document', routeName: 'blocks.index' },
+            { name: 'Block Roles', href: route('block-roles.index'), icon: 'users', routeName: 'block-roles.index' },
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
             { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
@@ -35,6 +36,9 @@ const pageTitles = {
     'Blocks/Index': 'Blocks',
     'Blocks/Create': 'Create Block',
     'Blocks/Edit':  'Edit Block',
+    'BlockRoles/Index': 'Block Roles',
+    'BlockRoles/Create': 'Create Block Role',
+    'BlockRoles/Edit':  'Edit Block Role',
     'Forms/Index':  'Forms',
     'Forms/Create': 'Create Form',
     'Forms/Edit':   'Edit Form',

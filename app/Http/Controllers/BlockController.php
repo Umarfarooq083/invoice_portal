@@ -40,7 +40,8 @@ class BlockController extends Controller
     public function create()
     {
         return Inertia::render('Blocks/Create', [
-            'availableModules' => $this->getAvailableModules()
+            'availableModules' => $this->getAvailableModules(),
+            'availableRoles' => \App\Models\BlockRole::orderBy('name')->get(['id', 'name'])
         ]);
     }
 
@@ -52,10 +53,16 @@ class BlockController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'modules' => 'nullable|array',
-            'modules.*' => 'string'
+            'modules.*' => 'string',
+            'roles' => 'nullable|array',
+            'roles.*' => 'integer|exists:block_roles,id'
         ]);
 
         $block = Block::create(['name' => $validated['name']]);
+
+        if (isset($validated['roles'])) {
+            $block->blockRoles()->sync($validated['roles']);
+        }
 
         if (isset($validated['modules'])) {
             foreach ($validated['modules'] as $module) {
@@ -79,10 +86,11 @@ class BlockController extends Controller
      */
     public function edit(Block $block)
     {
-        $block->load('modules');
+        $block->load(['modules', 'blockRoles']);
         return Inertia::render('Blocks/Edit', [
             'block' => $block,
-            'availableModules' => $this->getAvailableModules()
+            'availableModules' => $this->getAvailableModules(),
+            'availableRoles' => \App\Models\BlockRole::orderBy('name')->get(['id', 'name'])
         ]);
     }
 
@@ -94,10 +102,18 @@ class BlockController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'modules' => 'nullable|array',
-            'modules.*' => 'string'
+            'modules.*' => 'string',
+            'roles' => 'nullable|array',
+            'roles.*' => 'integer|exists:block_roles,id'
         ]);
 
         $block->update(['name' => $validated['name']]);
+
+        if (isset($validated['roles'])) {
+            $block->blockRoles()->sync($validated['roles']);
+        } else {
+            $block->blockRoles()->detach();
+        }
 
         $block->modules()->delete(); // Clear existing modules
         if (isset($validated['modules'])) {
