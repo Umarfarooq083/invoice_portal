@@ -41,9 +41,9 @@ defineProps({
                 <UpdatePasswordForm class="max-w-xl" />
             </div>
 
-            <div class="card p-8 border-danger-200 animate-fade-in stagger-3">
+            <!-- <div class="card p-8 border-danger-200 animate-fade-in stagger-3">
                 <DeleteUserForm class="max-w-xl" />
-            </div>
+            </div> -->
         </div>
     </AuthenticatedLayout>
 </template>
