@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -60,6 +60,26 @@ const apiPlotSize = ref('');  // raw plot_size value returned by the API
 
 // Show form_no lookup field only when block is selected
 const showFormNoLookup = computed(() => !!form.society_id);
+
+watch(() => form.society_id, () => {
+    form.form_no = '';
+    liveFormNo.value = '';
+    form.plot_price = '';
+    form.down_payment = '';
+    form.reg_type = '';
+    form.address = '';
+    form.size = '';
+    form.client_name = '';
+    form.contact = '';
+    form.client_cnic = '';
+    form.submitted_by = '';
+    form.submitter_cnic = '';
+    form.deposite_slip_no = '';
+    form.dealer_id = '';
+    apiPlotSize.value = '';
+    apiSuccess.value = false;
+    apiError.value = '';
+});
 
 async function fetchFormData() {
     const num = liveFormNo.value.toString().trim();

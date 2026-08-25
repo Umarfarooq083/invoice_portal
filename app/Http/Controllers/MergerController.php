@@ -33,7 +33,19 @@ class MergerController extends Controller
 
     public function store(Request $request)
     {
-        // Add validation and store logic later
+        $request->validate([
+            'society_id' => 'required',
+            'from_app_no' => [
+                'required',
+                \Illuminate\Validation\Rule::unique('invoice_merge', 'from_reg_no')->where(function ($query) use ($request) {
+                    return $query->where('society_id', $request->society_id);
+                })
+            ]
+        ], [
+            'from_app_no.unique' => 'This Form No has already been used in the selected block.',
+        ]);
+
+        // Add store logic later
     }
 
     public function fetchMainAppData(Request $request)

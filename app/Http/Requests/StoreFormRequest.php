@@ -21,7 +21,14 @@ class StoreFormRequest extends FormRequest
     {
         return [
             'society_id' => ['required', 'integer', 'exists:blocks,id'],
-            'form_no' => ['required', 'string', 'max:255'],
+            'form_no' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('forms', 'form_no')->where(function ($query) {
+                    return $query->where('society_id', $this->society_id);
+                })
+            ],
             'client_name' => ['required', 'string', 'max:255'],
             'client_cnic' => ['required', 'string', 'max:20'],
             'tracking_code' => ['nullable', 'string', 'max:255', 'unique:forms,tracking_code'],
@@ -55,6 +62,7 @@ class StoreFormRequest extends FormRequest
     {
         return [
             'form_no.required' => 'Form number is required.',
+            'form_no.unique' => 'This Form number is already registered for the selected block.',
             'client_name.required' => 'Client name is required.',
             'client_cnic.required' => 'Client CNIC is required.',
             'tracking_code.unique' => 'This tracking code already exists.',

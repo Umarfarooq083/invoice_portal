@@ -112,6 +112,37 @@ const mergingTypeOptions = computed(() => {
 watch(() => form.society_id, () => {
     form.sub_option_1 = '';
     form.sub_option_2 = '';
+    form.registration_no = '';
+    form.from_app_no = '';
+    form.from_security_code = '';
+    form.from_size = '';
+    form.client_name = '';
+    form.client_cnic = '';
+    form.app_type = '';
+    form.payment_plan_plot_price = 0;
+    form.payment_plan_live_id = '';
+    form.payment_plan_down_payment = 0;
+    form.ledger_down_payment = 0;
+    form.ledger_plot_price = 0;
+    form.sum_payment = 0;
+    form.received_downpayment = 0;
+    form.dealer_name = '';
+    form.dealer_phone = '';
+    form.submitter_cnic = '';
+    form.merge_to_details = [
+        {
+            merge_to: '',
+            merge_to_no: '',
+            to_security_code: '',
+            to_size: '',
+            merge_app_type: '',
+            ledger_amount: '',
+            merging_fee: '',
+            to_payment_plan_plot_price: '',
+            to_payment_plan_live_id: '',
+            to_payment_plan_down_payment: '',
+        }
+    ];
 });
 
 const fetchFromAppData = () => {
@@ -235,8 +266,9 @@ const formatCnic = (e, field) => {
 };
 
 const submit = () => {
-    console.table('Form Submitted', form.data());
-    console.table('Form Submitted', form.data().merge_to_details);
+    form.post(route('mergers.store'), {
+        preserveScroll: true,
+    });
 };
 
 </script>
