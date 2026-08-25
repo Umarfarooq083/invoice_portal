@@ -47,6 +47,35 @@ class BlockRoleController extends Controller
     }
 
     /**
+     * Show the form to assign users to this block role.
+     */
+    public function assignUsers(BlockRole $blockRole)
+    {
+        $users = \App\Models\User::orderBy('name')->get(['id', 'name', 'email']);
+        $blockRole->load('users:id'); // Load current assigned users
+
+        return Inertia::render('BlockRoles/AssignUsers', [
+            'blockRole' => $blockRole,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Sync the assigned users for this block role.
+     */
+    public function syncUsers(Request $request, BlockRole $blockRole)
+    {
+        $validated = $request->validate([
+            'users' => 'nullable|array',
+            'users.*' => 'integer|exists:users,id'
+        ]);
+
+        $blockRole->users()->sync($validated['users'] ?? []);
+
+        return redirect()->route('block-roles.index')->with('success', 'Users assigned successfully.');
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(BlockRole $blockRole)

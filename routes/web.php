@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
 
     // ─── Blocks Routes ────────//
     Route::resource('blocks', \App\Http\Controllers\BlockController::class);
+    Route::get('block-roles/{block_role}/assign-users', [\App\Http\Controllers\BlockRoleController::class, 'assignUsers'])->name('block-roles.assign-users');
+    Route::post('block-roles/{block_role}/assign-users', [\App\Http\Controllers\BlockRoleController::class, 'syncUsers'])->name('block-roles.sync-users');
     Route::resource('block-roles', \App\Http\Controllers\BlockRoleController::class);
 
     // ─── Invoices Routes ───────//
