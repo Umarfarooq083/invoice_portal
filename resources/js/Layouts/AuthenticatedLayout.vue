@@ -26,6 +26,7 @@ const navSections = [
             { name: 'Block Roles', href: route('block-roles.index'), icon: 'users', routeName: 'block-roles.index' },
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
+            { name: 'Merger Types', href: route('invoice-merger-types.index'), icon: 'document', routeName: 'invoice-merger-types.index' },
             { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
         ],
     },
