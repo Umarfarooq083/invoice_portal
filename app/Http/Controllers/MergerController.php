@@ -17,7 +17,7 @@ class MergerController extends Controller
     {
         $filters = $request->only(['sort', 'direction']);
         $mergers = $this->mergerService->getAllMergers($filters);
-        
+
         return Inertia::render('Mergers/Index', [
             'mergers' => $mergers,
             'filters' => $filters
@@ -76,7 +76,7 @@ class MergerController extends Controller
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'Content-Type' => 'application/json',
             'token' => config('services.awamigreen.token', '')
-        ])->get('http://mi.blueworldcity.com/frontend/web/api/mergerinvnew/get-open-data-reg', [
+        ])->get(config('services.awamigreen.base_url') . '/mergerinvnew/get-open-data-reg', [
             'reg_no' => $request->reg_no
         ]);
 

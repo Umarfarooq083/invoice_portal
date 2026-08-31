@@ -15,8 +15,15 @@ class MergerService
     {
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
-
-        return Merger::orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
+        $query = Merger::query();
+        // Filter out mergers that belong to blocks the user doesn't have access to
+        $query->whereHas('block', function ($q) {
+            $q->whereDoesntHave('blockRoles')
+                ->orWhereHas('blockRoles', function ($roleQuery) {
+                    $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                });
+        });
+        return $query->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
 
     /**
@@ -29,9 +36,9 @@ class MergerService
             $query->where('module_name', 'merger');
         })->where(function ($query) {
             $query->whereDoesntHave('blockRoles')
-                  ->orWhereHas('blockRoles', function ($roleQuery) {
-                      $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-                  });
+                ->orWhereHas('blockRoles', function ($roleQuery) {
+                    $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                });
         })->orderBy('name')->get(['id', 'name']);
 
         return [

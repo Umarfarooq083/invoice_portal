@@ -16,6 +16,7 @@ class FormService
      */
     public function getDropdownOptions(): array
     {
+        
         return [
             'blocks' => Block::whereHas('modules', function ($query) {
                 $query->where('module_name', 'forms');
@@ -69,6 +70,14 @@ class FormService
 
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
+
+        // Filter out forms that belong to blocks the user doesn't have access to
+        $query->whereHas('block', function ($q) {
+            $q->whereDoesntHave('blockRoles')
+              ->orWhereHas('blockRoles', function ($roleQuery) {
+                  $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+              });
+        });
 
         return $query->with(['user', 'block', 'appType', 'dealer'])->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }

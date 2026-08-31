@@ -35,6 +35,14 @@ class InvoiceService
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
 
+        // Filter out invoices that belong to blocks the user doesn't have access to
+        $query->whereHas('block', function ($q) {
+            $q->whereDoesntHave('blockRoles')
+              ->orWhereHas('blockRoles', function ($roleQuery) {
+                  $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+              });
+        });
+
         return $query->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
 

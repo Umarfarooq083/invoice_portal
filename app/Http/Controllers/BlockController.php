@@ -15,9 +15,7 @@ class BlockController extends Controller
     {
         $sortField = $request->input('sort', 'id');
         $sortDirection = $request->input('direction', 'desc');
-
-        $blocks = Block::with('modules')->orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
-
+        $blocks = Block::with('modules', 'blockRoles')->orderBy($sortField, $sortDirection)->paginate(10)->withQueryString();
         return Inertia::render('Blocks/Index', [
             'blocks' => $blocks,
             'filters' => $request->only(['sort', 'direction'])

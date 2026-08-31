@@ -11,4 +11,9 @@ class Merger extends Model
 
     protected $table = 'invoice_merge';
     protected $guarded = [];
+
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'society_id', 'id');
+    }
 }
