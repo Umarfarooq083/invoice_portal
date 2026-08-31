@@ -1,221 +1,263 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const stats = [
     {
         title: 'Total Revenue',
         value: '$48,352',
-        trend: '+12.5% vs last month',
+        trend: '+12.5%',
+        trendLabel: 'vs last month',
         trendUp: true,
-        icon: 'currency',
-        bgColor: 'bg-primary-100',
-        iconColor: 'text-primary-600',
+        iconPath: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+        iconBg: '#ede9fe',
+        iconColor: '#6d5dfc',
+        valueSuffix: '',
     },
     {
         title: 'Pending Invoices',
         value: '12',
-        trend: '+3 from last week',
+        trend: '+3',
+        trendLabel: 'from last week',
         trendUp: true,
-        icon: 'document',
-        bgColor: 'bg-warning-100',
-        iconColor: 'text-warning-600',
+        iconPath: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+        iconBg: '#fef9c3',
+        iconColor: '#ca8a04',
+        valueSuffix: '',
     },
     {
         title: 'Active Clients',
         value: '84',
-        trend: '+5 new this month',
+        trend: '+5',
+        trendLabel: 'new this month',
         trendUp: true,
-        icon: 'users',
-        bgColor: 'bg-success-100',
-        iconColor: 'text-success-600',
+        iconPath: 'M17 20h5v-2a3 3 0 00-3-3h-2m-6 5H7a2 2 0 01-2-2v-2a3 3 0 013-3h4a3 3 0 013 3v2a2 2 0 01-2 2m-2-5a3 3 0 11-6 0 3 3 0 016 0z',
+        iconBg: '#dcfce7',
+        iconColor: '#16a34a',
+        valueSuffix: '',
     },
     {
         title: 'Overdue Amount',
         value: '$3,240',
-        trend: '2 invoices overdue',
+        trend: '2',
+        trendLabel: 'invoices overdue',
         trendUp: false,
-        icon: 'exclamation',
-        bgColor: 'bg-danger-100',
-        iconColor: 'text-danger-600',
+        iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+        iconBg: '#fee2e2',
+        iconColor: '#dc2626',
+        valueSuffix: '',
     },
 ];
 
 const recentInvoices = [
-    { name: 'Acme Corporation', number: 'INV-2024-001', amount: '$2,450.00', status: 'paid', date: 'Aug 10, 2024' },
-    { name: 'TechStart Inc', number: 'INV-2024-002', amount: '$1,200.00', status: 'pending', date: 'Aug 12, 2024' },
-    { name: 'Global Solutions', number: 'INV-2024-003', amount: '$5,800.00', status: 'overdue', date: 'Aug 5, 2024' },
-    { name: 'Digital Agency', number: 'INV-2024-004', amount: '$3,100.00', status: 'draft', date: 'Aug 13, 2024' },
+    { id: '#INS-0120010', name: 'Emily Parker', email: 'emily@startupgrove.io', product: 'Bootstrap - Extended License', amount: '$999.00 USD', status: 'paid', dates: 'Feb 2 - Feb 10, 2025' },
+    { id: '#INS-0120009', name: 'Michael Scott', email: 'michael@dundermifflin.com', product: 'CRM Dashboard - Regular License', amount: '$249.00 USD', status: 'pending', dates: 'Feb 5 - Feb 12, 2025' },
+    { id: '#INS-0120008', name: 'Samantha Reed', email: 'samantha@clickandmine.com', product: 'Landing Page - Agency Pack', amount: '$349.00 USD', status: 'overdue', dates: 'Jan 10 - Jan 15, 2025' },
+    { id: '#INS-0120007', name: 'Jonathan Lee', email: 'jonathan@beanflow.io', product: 'Task Manager - SaaS Version', amount: '$799.00 USD', status: 'draft', dates: 'Mar 1 - Mar 5, 2025' },
+    { id: '#INS-0120006', name: 'Carlos Diaz', email: 'carlos@thereverwise.com', product: 'Admin Panel - Developer License', amount: '$1,199.00 USD', status: 'paid', dates: 'Mar 10 - Mar 15, 2025' },
 ];
 
-// const quickActions = [
-//     { name: 'Create Invoice', href: route('invoices.create'), icon: 'plus', bg: 'bg-primary-100', hover: 'hover:bg-primary-500', text: 'text-primary-600 hover:text-white', badge: 'badge-primary' },
-//     { name: 'Add Client', href: route('clients.create'), icon: 'users-add', bg: 'bg-success-100', hover: 'hover:bg-success-500', text: 'text-success-600 hover:text-white', badge: 'badge-success' },
-//     { name: 'Add Product', href: route('products.create'), icon: 'cube', bg: 'bg-accent-100', hover: 'hover:bg-accent-500', text: 'text-accent-600 hover:text-white', badge: 'badge-secondary' },
-//     { name: 'View Reports', href: route('reports.index'), icon: 'chart', bg: 'bg-secondary-100', hover: 'hover:bg-secondary-500', text: 'text-secondary-600 hover:text-white', badge: 'badge-secondary' },
-// ];
-
-const statusColors = {
+const statusBadge = {
     paid: 'badge-success',
     pending: 'badge-warning',
     overdue: 'badge-danger',
     draft: 'badge-secondary',
 };
 
-const iconPaths = {
-    currency: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-    document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    users: 'M17 20h5v-2a3 3 0 00-3-3h-2v-2a3 3 0 00-3-3h-2a3 3 0 00-3 3v2H9a3 3 0 00-3 3v2a3 3 0 003 3h5m0 0v-1a3 3 0 00-3-3h-2a3 3 0 00-3 3v1m0 0H5a3 3 0 01-3-3v-6a3 3 0 013-3h2a3 3 0 013 3v6a3 3 0 013 3z',
-    users_add: 'M19 11h2m-2 0a4.5 4.5 0 01-4.412 5H9.5a4.5 4.5 0 01-4.412-5h12.824zM15.5 3a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM5 20a3 3 0 013-3h11a3 3 0 013 3v2m-2 0h-2m0 0v-1a1 1 0 00-1-1m-4 1v1m0 0h2m-2 0H9m4 0v-1a1 1 0 00-1-1',
-    cube: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
-    chart: 'M9 19v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0h6',
-    exclamation: 'M12 8.5v6m0 0v.5m0-.5h.01M12 4.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15z',
-    plus: 'M12 4v16m8-8H4',
+const statusLabel = {
+    paid: 'Paid',
+    pending: 'Pending',
+    overdue: 'Overdue',
+    draft: 'Draft',
 };
 
-function getIconSvg(name) {
-    const path = iconPaths[name];
-    if (!path) return '';
-    return `<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${path}" /></svg>`;
-}
+const monthlyData = [45, 52, 38, 65, 71, 58, 82, 69, 77, 85, 92, 78];
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const maxVal = Math.max(...monthlyData);
 </script>
 
 <template>
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="page-header">
-                <div>
-                    <h1 class="page-title">Dashboard</h1>
-                    <p class="page-subtitle mt-1">Welcome back! Here's what's happening with your business.</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <PrimaryButton class="btn-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        New Invoice
-                    </PrimaryButton>
-                </div>
-            </div>
-        </template>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- ═══════ STATS GRID ═══════ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
             <div
                 v-for="(stat, i) in stats"
                 :key="stat.title"
-                class="stat-card animate-fade-in"
-                :style="{ animationDelay: `${i * 100}ms` }"
+                class="card p-5 animate-fade-in"
+                :style="{ animationDelay: `${i * 60}ms` }"
             >
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="stat-label">{{ stat.title }}</p>
-                        <p class="stat-value">{{ stat.value }}</p>
-                        <p class="stat-trend" :class="stat.trendUp ? 'text-success-600' : 'text-danger-600'">
-                            <svg v-if="stat.trendUp" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                            </svg>
-                            <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l-7 7m0 0l7 7m-7-7v18" />
-                            </svg>
-                            {{ stat.trend }}
-                        </p>
+                <div class="flex items-start justify-between mb-4">
+                    <div class="h-11 w-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                        :style="{ background: stat.iconBg }">
+                        <svg class="h-5 w-5" :style="{ color: stat.iconColor }"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                :d="stat.iconPath" />
+                        </svg>
                     </div>
-                    <div class="h-14 w-14 rounded-xl flex items-center justify-center" :class="stat.bg">
-                        <div v-html="getIconSvg(stat.icon)" :class="stat.iconColor" />
-                    </div>
+                </div>
+                <p class="stat-label mb-1">{{ stat.title }}</p>
+                <p class="stat-value">{{ stat.value }}</p>
+                <div class="mt-3 flex items-center gap-1.5 text-xs">
+                    <span :class="stat.trendUp ? 'text-emerald-600' : 'text-red-500'" class="font-semibold">
+                        {{ stat.trendUp ? '↑' : '↓' }} {{ stat.trend }}
+                    </span>
+                    <span class="text-slate-400">{{ stat.trendLabel }}</span>
                 </div>
             </div>
         </div>
 
-        <!-- Charts & Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- ═══════ CHART + TABLE ═══════ -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+
             <!-- Revenue Chart -->
-            <div class="lg:col-span-2 card-hover p-6 animate-fade-in">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-lg font-semibold text-dark-900">Revenue Overview</h2>
-                    <select class="input w-auto px-3 py-1.5 text-sm">
+            <div class="xl:col-span-2 card p-5 animate-fade-in">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-700">Revenue Overview</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Monthly performance, 2025</p>
+                    </div>
+                    <select class="input w-auto px-3 py-1.5 text-xs rounded-lg">
+                        <option>Last 12 months</option>
+                        <option>Last 6 months</option>
                         <option>Last 30 days</option>
-                        <option>Last 7 days</option>
-                        <option>Last 90 days</option>
-                        <option>Last year</option>
                     </select>
                 </div>
-                <div class="h-64 relative">
-                    <div class="absolute inset-0 flex items-end justify-around h-full px-4">
-                        <div
-                            v-for="(value, index) in [45, 52, 38, 65, 71, 58, 82, 69, 77, 85, 92, 78]"
-                            :key="index"
-                            class="flex-1 max-w-[40px] flex flex-col items-center justify-end transition-all duration-500"
-                        >
-                            <div
-                                class="w-full rounded-t-xl bg-gradient-to-t from-primary-500 to-primary-400"
-                                :style="{ height: `${value}%` }"
-                            />
-                            <span class="text-xs text-dark-400 mt-2">{{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][index] }}</span>
+
+                <!-- Bar Chart -->
+                <div class="h-48 flex items-end gap-1 px-1">
+                    <div
+                        v-for="(val, idx) in monthlyData"
+                        :key="idx"
+                        class="flex-1 flex flex-col items-center gap-1.5 group"
+                    >
+                        <div class="w-full rounded-t-lg relative overflow-hidden transition-all duration-500 cursor-pointer"
+                            :style="{
+                                height: `${(val / maxVal) * 100}%`,
+                                background: 'linear-gradient(to top, #6d5dfc, #a78bfa)',
+                                minHeight: '4px',
+                                opacity: '0.85',
+                            }">
+                            <!-- Tooltip -->
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                ${{ val }}k
+                            </div>
                         </div>
+                        <span class="text-[10px] text-slate-400">{{ months[idx] }}</span>
                     </div>
-                    <div class="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-dark-200 to-transparent" />
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-xs text-slate-400">Total Revenue</p>
+                        <p class="text-sm font-bold text-slate-800 mt-0.5">$48,352</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Avg Monthly</p>
+                        <p class="text-sm font-bold text-slate-800 mt-0.5">$4,029</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Growth</p>
+                        <p class="text-sm font-bold text-emerald-600 mt-0.5">+12.5%</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Recent Invoices -->
-            <div class="card-hover p-6 animate-fade-in">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-dark-900">Recent Invoices</h2>
-
-                </div>
-                <div class="space-y-4">
-                    <div
-                        v-for="invoice in recentInvoices"
-                        :key="invoice.number"
-                        class="flex items-center justify-between p-4 rounded-xl bg-dark-50 hover:bg-dark-100 transition-colors"
-                    >
-                        <div class="flex items-center gap-4">
-                            <div class="h-10 w-10 rounded-xl bg-white flex items-center justify-center shadow-soft">
-                                <svg class="h-5 w-5 text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+            <!-- Quick Stats / Donut placeholder -->
+            <div class="card p-5 animate-fade-in">
+                <h2 class="text-sm font-semibold text-slate-700 mb-4">Invoice Status</h2>
+                <div class="space-y-3">
+                    <div v-for="item in [
+                        { label: 'Paid', value: 42, color: '#16a34a', bg: '#dcfce7' },
+                        { label: 'Pending', value: 28, color: '#ca8a04', bg: '#fef9c3' },
+                        { label: 'Overdue', value: 15, color: '#dc2626', bg: '#fee2e2' },
+                        { label: 'Draft', value: 15, color: '#94a3b8', bg: '#f1f5f9' },
+                    ]" :key="item.label">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full" :style="{ background: item.color }" />
+                                <span class="text-xs text-slate-600">{{ item.label }}</span>
                             </div>
-                            <div>
-                                <p class="font-medium text-dark-900">{{ invoice.name }}</p>
-                                <p class="text-sm text-dark-500">{{ invoice.number }} · {{ invoice.date }}</p>
-                            </div>
+                            <span class="text-xs font-semibold text-slate-700">{{ item.value }}%</span>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <span class="font-semibold text-dark-900">{{ invoice.amount }}</span>
-                            <span :class="statusColors[invoice.status]" class="badge">
-                                {{ invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1) }}
-                            </span>
+                        <div class="h-1.5 rounded-full" :style="{ background: item.bg }">
+                            <div class="h-1.5 rounded-full transition-all duration-700"
+                                :style="{ width: item.value + '%', background: item.color }" />
                         </div>
                     </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-t border-slate-100">
+                    <Link :href="route('forms.index')" class="btn btn-primary w-full justify-center text-xs py-2">
+                        View All Forms
+                    </Link>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
-            <Link
-                v-for="(action, i) in quickActions"
-                :key="action.name"
-                :href="action.href"
-                class="card-hover p-6 text-center group"
-                :style="{ animationDelay: `${i * 100}ms` }"
-            >
-                <div class="h-14 w-14 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all" :class="[action.bg, action.hover, action.text]">
-                    <div v-html="getIconSvg(action.icon)" />
+        <!-- ═══════ RECENT INVOICES TABLE ═══════ -->
+        <div class="card mt-5 animate-fade-in overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-700">Recent Invoices</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Latest 5 transactions</p>
                 </div>
-                <h3 class="font-semibold text-dark-900 mb-1">{{ action.name }}</h3>
-                <p class="text-sm text-dark-500">
-                    {{ action.name === 'Create Invoice' ? 'Generate a new invoice' :
-                       action.name === 'Add Client' ? 'Register new client' :
-                       action.name === 'Add Product' ? 'Create new product' :
-                       'Business analytics' }}
-                </p>
-            </Link>
-        </div> -->
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client Name</th>
+                            <th>Product</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Dates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="inv in recentInvoices" :key="inv.id">
+                            <td>
+                                <span class="font-mono text-xs font-medium text-primary-600">{{ inv.id }}</span>
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2.5">
+                                    <div class="h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-semibold"
+                                        style="background: linear-gradient(135deg, #6d5dfc, #48cfad);">
+                                        {{ inv.name.charAt(0) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-700">{{ inv.name }}</p>
+                                        <p class="text-xs text-slate-400">{{ inv.email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-slate-500">{{ inv.product }}</td>
+                            <td>
+                                <span class="text-sm font-semibold text-slate-700">{{ inv.amount }}</span>
+                            </td>
+                            <td>
+                                <span :class="statusBadge[inv.status]" class="badge">
+                                    {{ statusLabel[inv.status] }}
+                                </span>
+                            </td>
+                            <td class="text-slate-400 text-xs">{{ inv.dates }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-5 py-3 border-t border-slate-100 flex justify-between items-center">
+                <p class="text-xs text-slate-400">Showing 1 to 5 of 10 invoices</p>
+                <div class="flex gap-1">
+                    <button class="px-2.5 py-1 rounded-lg text-xs text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors">← Prev</button>
+                    <button class="px-2.5 py-1 rounded-lg text-xs text-white transition-colors" style="background: #6d5dfc;">1</button>
+                    <button class="px-2.5 py-1 rounded-lg text-xs text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors">2</button>
+                    <button class="px-2.5 py-1 rounded-lg text-xs text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors">Next →</button>
+                </div>
+            </div>
+        </div>
+
     </AuthenticatedLayout>
 </template>

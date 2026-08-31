@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'awamigreen' => [
+        'base_url' => env('AWAMI_GREEN_API_BASE_URL'),
+        'token' => env('API_TOKEN'),
+    ],
+
 ];
+
