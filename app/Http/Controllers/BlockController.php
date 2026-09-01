@@ -8,9 +8,6 @@ use Inertia\Inertia;
 
 class BlockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $sortField = $request->input('sort', 'id');
@@ -32,9 +29,6 @@ class BlockController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return Inertia::render('Blocks/Create', [
@@ -43,9 +37,6 @@ class BlockController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,31 +48,22 @@ class BlockController extends Controller
         ]);
 
         $block = Block::create(['name' => $validated['name']]);
-
         if (isset($validated['roles'])) {
             $block->blockRoles()->sync($validated['roles']);
         }
-
         if (isset($validated['modules'])) {
             foreach ($validated['modules'] as $module) {
                 $block->modules()->create(['module_name' => $module]);
             }
         }
-
         return redirect()->route('blocks.index')->with('success', 'Block created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Block $block)
     {
         return Inertia::render('Blocks/Show', ['block' => $block]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Block $block)
     {
         $block->load(['modules', 'blockRoles']);
@@ -92,9 +74,6 @@ class BlockController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Block $block)
     {
         $validated = $request->validate([
@@ -113,19 +92,15 @@ class BlockController extends Controller
             $block->blockRoles()->detach();
         }
 
-        $block->modules()->delete(); // Clear existing modules
+        $block->modules()->delete(); 
         if (isset($validated['modules'])) {
             foreach ($validated['modules'] as $module) {
                 $block->modules()->create(['module_name' => $module]);
             }
         }
-
         return redirect()->route('blocks.index')->with('success', 'Block updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Block $block)
     {
         $block->delete();

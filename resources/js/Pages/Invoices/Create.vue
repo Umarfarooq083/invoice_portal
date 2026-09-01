@@ -4,9 +4,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
 const showPreview = ref(false);
@@ -54,6 +53,10 @@ const props = defineProps({
     }
 });
 
+function generateTrackingCode() {
+    return Math.random().toString(36).substring(2, 12).toUpperCase();
+}
+
 const form = useForm({
     search_open_reg: '',
     security_code: '',
@@ -68,7 +71,7 @@ const form = useForm({
     client_cnic: '',
     box_no: props.box_no,
     sr_no: props.next_sr_no,
-    tracking_code: '',
+    tracking_code: generateTrackingCode(),
     received_by: '',
     dealer_phone: '',
     submitter_cnic: '',
@@ -247,8 +250,6 @@ function onSearchKeydown(e) {
                     </div>
 
                     <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Search Open Reg -->
-                        <!-- Block (Society ID) -->
                         <div>
                             <InputLabel for="society_id" value="Block" class="label" />
                             <select id="society_id"
@@ -440,8 +441,8 @@ function onSearchKeydown(e) {
                             <!-- Tracking Code -->
                             <div>
                                 <InputLabel for="tracking_code" value="Tracking Code *" class="label" />
-                                <TextInput id="tracking_code" type="text" class="mt-1" v-model="form.tracking_code"
-                                    placeholder="TRK-99201" required />
+                                <input id="tracking_code" type="text" class="input mt-1" v-model="form.tracking_code"
+                                    placeholder="Auto-generated" readonly style="background-color: #f5f5f5;" />
                                 <InputError class="mt-1.5" :message="form.errors.tracking_code" />
                             </div>
                             <!-- Submitted By ID -->

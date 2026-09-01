@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Merger;
 use App\Services\MergerService;
 use Inertia\Inertia;
 
