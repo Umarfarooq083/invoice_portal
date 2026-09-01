@@ -167,7 +167,7 @@ const fetchFromAppData = () => {
             if (data && (response.data.success !== false)) {
                 if (data.reg_no) form.from_app_no = data.reg_no;
                 if (data.security_code) form.from_security_code = data.security_code;
-                if (data.plot_size_title) form.from_size = data.plot_size_title;
+                if (data.marla_display_size) form.from_size = data.marla_display_size;
                 if (data.member_name) form.client_name = data.member_name;
                 if (data.client_cnic) form.client_cnic = data.client_cnic;
                 if (data.plot_type_title) form.app_type = data.plot_type_title;
@@ -189,6 +189,17 @@ const fetchFromAppData = () => {
         });
 };
 
+const parseMarla = (sizeStr) => {
+    if (!sizeStr) return 0;
+    let str = String(sizeStr).toLowerCase().trim();
+    let num = parseFloat(str);
+    if (isNaN(num)) return 0;
+    if (str.includes('kanal')) {
+        return num * 20;
+    }
+    return num;
+};
+
 const fetchMergeToData = (index) => {
     const detail = form.merge_to_details[index];
     if (!detail.merge_to) return;
@@ -205,13 +216,36 @@ const fetchMergeToData = (index) => {
 
             const data = response.data.data || response.data;
             if (data && response.data.success !== false) {
+                if (data.is_block !== undefined && String(data.is_block) !== "0") {
+                    alert(data.block_comments || "This item is blocked and cannot be used for merging.");
+                    detail.merge_to = '';
+                    return;
+                }
+
+                const fromSizeStr = form.from_size || '';
+                const toSizeStr = data.marla_display_size || '';
+
+                const fromSizeNum = parseMarla(fromSizeStr);
+                const toSizeNum = parseMarla(toSizeStr);
+
+                if (fromSizeNum > 0 && toSizeNum > 0 && toSizeNum > fromSizeNum) {
+                    alert(`Merge To size (${toSizeStr}) cannot be greater than From size (${fromSizeStr}).`);
+                    detail.merge_to = '';
+                    return;
+                }
+
                 if (data.reg_no) detail.merge_to_no = data.reg_no;
                 if (data.security_code) detail.to_security_code = data.security_code;
-                if (data.marla_display_size) detail.to_size = data.marla_display_size;
+                if (data.marla_display_size) {
+                    detail.to_size = data.marla_display_size;
+                    if (toSizeNum > 0) {
+                        detail.merging_fee = toSizeNum * 1000;
+                    }
+                }
                 if (data.plot_type_title) detail.merge_app_type = data.plot_type_title;
-                if (data.payment_plan_plot_price) detail.to_payment_plan_plot_price = data.payment_plan_plot_price;
+                if (data.payment_plan_plot_price_gen) detail.to_payment_plan_plot_price = data.payment_plan_plot_price_gen;
                 if (data.payment_plan_id) detail.to_payment_plan_live_id = data.payment_plan_id;
-                if (data.payment_plan_down_payment) detail.to_payment_plan_down_payment = data.payment_plan_down_payment;
+                if (data.payment_plan_down_payment_gen) detail.to_payment_plan_down_payment = data.payment_plan_down_payment_gen;
                 if (data.legder_plot_price) detail.ledger_amount = data.legder_plot_price;
             } else {
                 alert(response.data?.message || 'Data not found. Please check the Reg No.');
@@ -232,7 +266,6 @@ const onSearchFromKeydown = (e) => {
 };
 
 const onSearchToKeydown = (e, index) => {
-    // alert(form.from_app_no);
     if (e.key === 'Enter') {
         e.preventDefault();
         fetchMergeToData(index);
@@ -592,7 +625,7 @@ const submit = () => {
                                     <div>
                                         <InputLabel :for="'merging_fee_' + index" value="Merging Fee" class="label" />
                                         <TextInput :id="'merging_fee_' + index" type="number" step="0.01" class="mt-1"
-                                            v-model="detail.merging_fee" />
+                                            v-model="detail.merging_fee" readonly disabled/>
                                     </div>
 
                                     <div>
