@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
-use App\Models\Dealer;
-use App\Models\Block;
 use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -16,9 +13,6 @@ class InvoiceController extends Controller
         private InvoiceService $invoiceService
     ) {}
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $filters = $request->only(['search', 'plot_type', 'sort', 'direction']);
@@ -29,19 +23,13 @@ class InvoiceController extends Controller
             'filters' => $filters
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+  
     public function create()
     {
         $data = $this->invoiceService->getCreateData();
         return Inertia::render('Invoices/Create', $data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -51,10 +39,10 @@ class InvoiceController extends Controller
             'plot_type' => 'nullable|string|max:255',
             'downpayment' => 'nullable|numeric',
             'plot_price' => 'nullable|numeric',
-            'client_name' => 'nullable|string|max:255',
-            'contact' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'client_cnic' => 'nullable|string|max:255',
+            'client_name' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'address' => 'required|string',
+            'client_cnic' => 'required|string|max:255',
             'box_no' => 'required|numeric',
             'sr_no' => 'required|max:255',
             'tracking_code' => 'required|string|max:255',
@@ -63,11 +51,10 @@ class InvoiceController extends Controller
             'submitter_cnic' => 'nullable|string|max:255',
             'dealer_id' => 'nullable|numeric',
             'society_id' => 'nullable|numeric|exists:blocks,id',
-            'file_id' => 'nullable|numeric', // Just in case, to prevent DB error since file_id is required in DB but they didn't ask for it
+            'file_id' => 'nullable|numeric', 
         ]);
 
         $this->invoiceService->createInvoice($validated);
-
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
     }
 
@@ -100,7 +87,6 @@ class InvoiceController extends Controller
                 $response->status()
             );
         }
-
         return response()->json($response->json());
     }
 }

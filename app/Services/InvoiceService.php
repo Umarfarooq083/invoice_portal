@@ -9,13 +9,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class InvoiceService
 {
-    /**
-     * Get all invoices with optional filters and sorting, paginated.
-     */
     public function getAllInvoices(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $query = Invoice::query();
-
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
@@ -25,17 +21,12 @@ class InvoiceService
                     ->orWhere('client_cnic', 'like', "%{$search}%");
             });
         }
-
         if (!empty($filters['plot_type'])) {
             $query->where('plot_type', $filters['plot_type']);
         }
-        
         $query->with('block', 'user');
-
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
-
-        // Filter out invoices that belong to blocks the user doesn't have access to
         $query->whereHas('block', function ($q) {
             $q->whereDoesntHave('blockRoles')
               ->orWhereHas('blockRoles', function ($roleQuery) {
@@ -45,10 +36,7 @@ class InvoiceService
 
         return $query->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
-
-    /**
-     * Get data required for the create invoice view.
-     */
+   
     public function getCreateData(): array
     {
         $boxNo = now()->format('dmy');
@@ -73,13 +61,10 @@ class InvoiceService
         ];
     }
 
-    /**
-     * Create a new invoice record.
-     */
     public function createInvoice(array $data): Invoice
     {
         if (!isset($data['file_id'])) {
-            $data['file_id'] = 0; // Temporary default since it's an integer column with no default in DB
+            $data['file_id'] = 0; 
         }
         if (!isset($data['dealer_name'])) {
             $data['dealer_name'] = '';

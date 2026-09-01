@@ -47,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/mergers/fetch-main-app-data', [\App\Http\Controllers\MergerController::class, 'fetchMainAppData'])->name('mergers.fetch-main-app-data');
     Route::get('/mergers/fetch-merge-to-data', [\App\Http\Controllers\MergerController::class, 'fetchMergeToData'])->name('mergers.fetch-merge-to-data');
     Route::resource('mergers', \App\Http\Controllers\MergerController::class);
+
+    // ─── Invoice Merger Types Routes ───────//
+    Route::resource('invoice-merger-types', \App\Http\Controllers\InvoiceMergerTypeController::class);
 });
 
 require __DIR__ . '/auth.php';

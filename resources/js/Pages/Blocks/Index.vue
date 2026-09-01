@@ -112,7 +112,8 @@ function destroyBlock() {
                             <td class="py-3 px-4">
                                 <div class="flex flex-wrap gap-1">
                                     <span v-for="roles in block?.block_roles" :key="roles.id"
-                                        class="px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 capitalize">
+                                        style="background-color: #3b71ca; color: #fff;"
+                                        class="px-2 py-0.5 rounded text-xs font-medium border capitalize">
                                         {{ roles?.name }}
                                     </span>
                                     <span v-if="!block.modules || block.modules.length === 0"
