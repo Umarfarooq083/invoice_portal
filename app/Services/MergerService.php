@@ -17,12 +17,12 @@ class MergerService
         $sortDirection = $filters['direction'] ?? 'desc';
         $query = Merger::query();
         // Filter out mergers that belong to blocks the user doesn't have access to
-        $query->whereHas('block', function ($q) {
-            $q->whereDoesntHave('blockRoles')
-                ->orWhereHas('blockRoles', function ($roleQuery) {
-                    $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-                });
-        });
+        // $query->whereHas('block', function ($q) {
+        //     $q->whereDoesntHave('blockRoles')
+        //         ->orWhereHas('blockRoles', function ($roleQuery) {
+        //             $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+        //         });
+        // });
         return $query->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
 

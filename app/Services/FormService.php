@@ -15,15 +15,15 @@ class FormService
      */
     public function getDropdownOptions(): array
     {
-        
+
         return [
             'blocks' => Block::whereHas('modules', function ($query) {
                 $query->where('module_name', 'forms');
             })->where(function ($query) {
                 $query->whereDoesntHave('blockRoles')
-                      ->orWhereHas('blockRoles', function ($roleQuery) {
-                          $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-                      });
+                    ->orWhereHas('blockRoles', function ($roleQuery) {
+                        $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                    });
             })->orderBy('name')->get(['id', 'name'])->toArray(),
             'app_types' => AppType::all(['id', 'name'])->toArray(),
             'dealers' => \App\Models\Dealer::all(['id', 'name'])->toArray(),
@@ -71,12 +71,12 @@ class FormService
         $sortDirection = $filters['direction'] ?? 'desc';
 
         // Filter out forms that belong to blocks the user doesn't have access to
-        $query->whereHas('block', function ($q) {
-            $q->whereDoesntHave('blockRoles')
-              ->orWhereHas('blockRoles', function ($roleQuery) {
-                  $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-              });
-        });
+        // $query->whereHas('block', function ($q) {
+        //     $q->whereDoesntHave('blockRoles')
+        //         ->orWhereHas('blockRoles', function ($roleQuery) {
+        //             $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+        //         });
+        // });
 
         return $query->with(['user', 'block', 'appType', 'dealer'])->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
