@@ -160,7 +160,7 @@ class FormController extends Controller
             config('services.awamigreen.base_url') . '/awamigreen/get-booking-form-live-data-formno',
             ['form_no' => $formNo]
         );
-
+        // dd($response->json());
         if ($response->failed()) {
             return response()->json(
                 ['error' => 'External API request failed. Status: ' . $response->status()],

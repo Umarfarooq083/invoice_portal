@@ -207,7 +207,7 @@ const fetchMergeToData = (index) => {
             if (data && response.data.success !== false) {
                 if (data.reg_no) detail.merge_to_no = data.reg_no;
                 if (data.security_code) detail.to_security_code = data.security_code;
-                if (data.plot_size_title) detail.to_size = data.plot_size_title;
+                if (data.marla_display_size) detail.to_size = data.marla_display_size;
                 if (data.plot_type_title) detail.merge_app_type = data.plot_type_title;
                 if (data.payment_plan_plot_price) detail.to_payment_plan_plot_price = data.payment_plan_plot_price;
                 if (data.payment_plan_id) detail.to_payment_plan_live_id = data.payment_plan_id;
@@ -656,12 +656,15 @@ const submit = () => {
 
                             <div>
                                 <InputLabel for="box_no" value="Box No" class="label" />
-                                <TextInput id="box_no" type="text" class="mt-1 font-semibold text-slate-900 bg-slate-50" v-model="form.box_no" readonly disabled />
+                                <TextInput id="box_no" type="text" class="mt-1 font-semibold text-slate-900 bg-slate-50"
+                                    v-model="form.box_no" readonly disabled />
                             </div>
 
                             <div>
                                 <InputLabel for="tracking_code" value="Tracking Code" class="label" />
-                                <TextInput id="tracking_code" type="text" class="mt-1 font-mono font-semibold text-slate-900 bg-slate-50" v-model="form.tracking_code" readonly disabled />
+                                <TextInput id="tracking_code" type="text"
+                                    class="mt-1 font-mono font-semibold text-slate-900 bg-slate-50"
+                                    v-model="form.tracking_code" readonly disabled />
                             </div>
 
                             <div>

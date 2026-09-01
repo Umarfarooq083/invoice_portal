@@ -28,6 +28,7 @@ function generateBoxNo() {
 
 const form = useForm({
     form_no: '',
+    inv_reg_no: '',
     tracking_code: generateTrackingCode(),
     plot_price: '',
     down_payment: '',
@@ -63,6 +64,7 @@ const showFormNoLookup = computed(() => !!form.society_id);
 
 watch(() => form.society_id, () => {
     form.form_no = '';
+    form.inv_reg_no = '';
     liveFormNo.value = '';
     form.plot_price = '';
     form.down_payment = '';
@@ -107,6 +109,7 @@ async function fetchFormData() {
         }
         if (data && data.id) {
             form.form_no = data.form_no ?? form.form_no;
+            form.inv_reg_no = data.form_no ?? form.inv_reg_no;
             form.plot_price = data.plot_price ?? form.plot_price;
             form.down_payment = data.down_payment ?? form.down_payment;
             form.client_name = data.client_name ?? form.client_name;
