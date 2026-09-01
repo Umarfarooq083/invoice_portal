@@ -109,9 +109,7 @@ const mergingTypeOptions = computed(() => {
     return [];
 });
 
-watch(() => form.society_id, () => {
-    form.sub_option_1 = '';
-    form.sub_option_2 = '';
+const clearAppAndMergeDetails = () => {
     form.registration_no = '';
     form.from_app_no = '';
     form.from_security_code = '';
@@ -126,9 +124,6 @@ watch(() => form.society_id, () => {
     form.ledger_plot_price = 0;
     form.sum_payment = 0;
     form.received_downpayment = 0;
-    form.dealer_name = '';
-    form.dealer_phone = '';
-    form.submitter_cnic = '';
     form.merge_to_details = [
         {
             merge_to: '',
@@ -143,11 +138,28 @@ watch(() => form.society_id, () => {
             to_payment_plan_down_payment: '',
         }
     ];
+};
+
+watch(() => form.society_id, () => {
+    form.sub_option_1 = '';
+    form.sub_option_2 = '';
+    clearAppAndMergeDetails();
+    form.dealer_name = '';
+    form.dealer_phone = '';
+    form.submitter_cnic = '';
+});
+
+watch([() => form.sub_option_1, () => form.sub_option_2], () => {
+    clearAppAndMergeDetails();
 });
 
 const fetchFromAppData = () => {
     if (!form.registration_no || !form.society_id) {
         alert("Please select Block and enter App No");
+        return;
+    }
+    if ((showOneExtraDropdown.value || showTwoExtraDropdowns.value) && !form.sub_option_1) {
+        alert("Please select File Type");
         return;
     }
     isFetching.value = true;
@@ -161,8 +173,6 @@ const fetchFromAppData = () => {
     })
         .then(response => {
             isFetching.value = false;
-            console.log("Data fetched for main App No: ", response.data);
-
             const data = response.data.data || response.data;
             if (data && (response.data.success !== false)) {
                 if (data.reg_no) form.from_app_no = data.reg_no;
@@ -212,7 +222,6 @@ const fetchMergeToData = (index) => {
     })
         .then(response => {
             isFetchingMergeTo.value[index] = false;
-            console.log("Data fetched for Merge To: ", response.data);
 
             const data = response.data.data || response.data;
             if (data && response.data.success !== false) {
@@ -358,7 +367,7 @@ const submit = () => {
 
                         <div v-if="showOneExtraDropdown || showTwoExtraDropdowns">
                             <InputLabel for="sub_option_1" value="Select File Type" class="label" />
-                            <select class="input mt-1" v-model="form.sub_option_1">
+                            <select id="sub_option_1" class="input mt-1" v-model="form.sub_option_1" required>
                                 <option value="" disabled>Select File Type</option>
                                 <option v-for="option in fileTypeOptions" :key="option.value" :value="option.value">
                                     {{ option.label }}
@@ -569,7 +578,7 @@ const submit = () => {
                                             <TextInput :id="'merge_to_' + index" type="text" class="pl-10 mt-0"
                                                 style="padding-right: 2.5rem;" v-model="detail.merge_to"
                                                 @keydown="onSearchToKeydown($event, index)"
-                                                :disabled="isFetchingMergeTo[index]"
+                                                :disabled="isFetchingMergeTo[index] || form.from_size === ''"
                                                 placeholder="Type and press Enter..." required />
                                             <span v-if="isFetchingMergeTo[index]"
                                                 class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
@@ -619,13 +628,13 @@ const submit = () => {
                                         <InputLabel :for="'ledger_amount_' + index" value="Ledger Amount"
                                             class="label" />
                                         <TextInput :id="'ledger_amount_' + index" type="number" step="0.01" class="mt-1"
-                                            v-model="detail.ledger_amount" />
+                                            readonly disabled v-model="detail.ledger_amount" />
                                     </div>
 
                                     <div>
                                         <InputLabel :for="'merging_fee_' + index" value="Merging Fee" class="label" />
                                         <TextInput :id="'merging_fee_' + index" type="number" step="0.01" class="mt-1"
-                                            v-model="detail.merging_fee" readonly disabled/>
+                                            v-model="detail.merging_fee" readonly disabled />
                                     </div>
 
                                     <div>
