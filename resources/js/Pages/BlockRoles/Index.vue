@@ -63,7 +63,7 @@ function destroyBlockRole() {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50 w-24">
+                            <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50">
                                 <div class="flex items-center gap-1">
                                     ID
                                     <span v-if="filters?.sort === 'id'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
@@ -77,6 +77,13 @@ function destroyBlockRole() {
                                     <span v-else class="text-xs text-slate-300">↕</span>
                                 </div>
                             </th>
+                            <th @click="sort('users_count')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">
+                                    Users Count
+                                    <span v-if="filters?.sort === 'users_count'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-else class="text-xs text-slate-300">↕</span>
+                                </div>
+                            </th>
                             <th class="w-24">Actions</th>
                         </tr>
                     </thead>
@@ -87,6 +94,11 @@ function destroyBlockRole() {
                             </td>
                             <td class="text-slate-700 font-medium py-3 px-4">
                                 {{ role.name }}
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold border border-slate-200">
+                                    {{ role.users_count || 0 }} {{ role.users_count === 1 ? 'User' : 'Users' }}
+                                </span>
                             </td>
                             <td>
                                 <div class="flex gap-1">

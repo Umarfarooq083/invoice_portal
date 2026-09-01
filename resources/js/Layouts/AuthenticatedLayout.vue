@@ -26,24 +26,24 @@ const navSections = [
             { name: 'Block Roles', href: route('block-roles.index'), icon: 'users', routeName: 'block-roles.index' },
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
             { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
-            { name: 'Merger Types', href: route('invoice-merger-types.index'), icon: 'document', routeName: 'invoice-merger-types.index' },
+            // { name: 'Merger Types', href: route('invoice-merger-types.index'), icon: 'document', routeName: 'invoice-merger-types.index' },
             { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
         ],
     },
 ];
 
 const pageTitles = {
-    Dashboard:    'Dashboard',
+    Dashboard: 'Dashboard',
     'Blocks/Index': 'Blocks',
     'Blocks/Create': 'Create Block',
-    'Blocks/Edit':  'Edit Block',
+    'Blocks/Edit': 'Edit Block',
     'BlockRoles/Index': 'Block Roles',
     'BlockRoles/Create': 'Create Block Role',
-    'BlockRoles/Edit':  'Edit Block Role',
-    'Forms/Index':  'Forms',
+    'BlockRoles/Edit': 'Edit Block Role',
+    'Forms/Index': 'Forms',
     'Forms/Create': 'Create Form',
-    'Forms/Edit':   'Edit Form',
-    'Forms/Show':   'Form Details',
+    'Forms/Edit': 'Edit Form',
+    'Forms/Show': 'Form Details',
     'Dealers/Index': 'Dealers',
     'Dealers/Create': 'Create Dealer',
     'Dealers/Edit': 'Edit Dealer',
@@ -68,11 +68,11 @@ watch(sidebarCollapsed, v => window.localStorage.setItem(sidebarStorageKey, Stri
 
 // icon map
 const iconPaths = {
-    home:     'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+    home: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
     document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    users:    'M17 20h5v-2a3 3 0 00-3-3h-2m-6 5H7a2 2 0 01-2-2v-2a3 3 0 013-3h4a3 3 0 013 3v2a2 2 0 01-2 2m-2-5a3 3 0 11-6 0 3 3 0 016 0z',
-    cog:      'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
-    chart:    'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    users: 'M17 20h5v-2a3 3 0 00-3-3h-2m-6 5H7a2 2 0 01-2-2v-2a3 3 0 013-3h4a3 3 0 013 3v2a2 2 0 01-2 2m-2-5a3 3 0 11-6 0 3 3 0 016 0z',
+    cog: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
+    chart: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
 };
 
 const NavIcon = {
@@ -97,20 +97,15 @@ function isActive(routeName) {
     <div class="min-h-screen" style="background: #f0f2f5;">
 
         <!-- Mobile overlay -->
-        <div v-if="sidebarOpen"
-            class="fixed inset-0 z-40 lg:hidden bg-black/40 backdrop-blur-sm"
+        <div v-if="sidebarOpen" class="fixed inset-0 z-40 lg:hidden bg-black/40 backdrop-blur-sm"
             @click="sidebarOpen = false" />
 
         <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
-        <aside
-            :class="[
-                sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-                desktopSidebarClass,
-                'fixed inset-y-0 left-0 z-50 w-60 transform transition-all duration-300 ease-in-out lg:translate-x-0',
-            ]"
-            style="background: #1c2431;"
-            aria-label="Sidebar"
-        >
+        <aside :class="[
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+            desktopSidebarClass,
+            'fixed inset-y-0 left-0 z-50 w-60 transform transition-all duration-300 ease-in-out lg:translate-x-0',
+        ]" style="background: #1c2431;" aria-label="Sidebar">
             <div class="flex h-full flex-col">
 
                 <!-- Logo -->
@@ -118,7 +113,7 @@ function isActive(routeName) {
                     <Link :href="route('dashboard')" class="flex items-center gap-2.5 min-w-0">
                         <div class="h-9 w-9 flex-shrink-0 flex items-center justify-center rounded-lg"
                             style="background: #3b71ca;">
-                             <ApplicationLogo class="h-5 w-5 fill-white" />
+                            <ApplicationLogo class="h-5 w-5 fill-white" />
                         </div>
                         <span v-if="!sidebarCollapsed" class="text-base font-bold text-white truncate">
                             Invoice Portal
@@ -130,27 +125,18 @@ function isActive(routeName) {
                 <nav class="flex-1 overflow-y-auto px-3 py-4">
                     <template v-for="section in navSections" :key="section.label">
                         <!-- Section header -->
-                        <p v-if="!sidebarCollapsed"
-                            class="sidebar-section">
+                        <p v-if="!sidebarCollapsed" class="sidebar-section">
                             {{ section.label }}
                         </p>
                         <div v-else class="mt-4 mb-1 border-t border-[#2a3447]" />
 
                         <template v-for="item in section.items" :key="item.name">
-                            <Link
-                                :href="item.href"
-                                :class="[
-                                    isActive(item.routeName) ? 'sidebar-link-active' : 'sidebar-link',
-                                    sidebarCollapsed ? 'justify-center px-0' : '',
-                                    'mb-0.5',
-                                ]"
-                                :title="sidebarCollapsed ? item.name : undefined"
-                                @click="sidebarOpen = false"
-                            >
-                                <NavIcon
-                                    :name="item.icon"
-                                    :className="'h-5 w-5 flex-shrink-0'"
-                                />
+                            <Link :href="item.href" :class="[
+                                isActive(item.routeName) ? 'sidebar-link-active' : 'sidebar-link',
+                                sidebarCollapsed ? 'justify-center px-0' : '',
+                                'mb-0.5',
+                            ]" :title="sidebarCollapsed ? item.name : undefined" @click="sidebarOpen = false">
+                                <NavIcon :name="item.icon" :className="'h-5 w-5 flex-shrink-0'" />
                                 <span v-if="!sidebarCollapsed" class="truncate">{{ item.name }}</span>
                             </Link>
                         </template>
@@ -195,7 +181,8 @@ function isActive(routeName) {
                         class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
                         aria-label="Open menu">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
 
@@ -203,8 +190,8 @@ function isActive(routeName) {
                     <button @click="sidebarCollapsed = !sidebarCollapsed"
                         class="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
                         :aria-label="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
-                        <svg :class="sidebarCollapsed ? 'rotate-180' : ''"
-                            class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg :class="sidebarCollapsed ? 'rotate-180' : ''" class="h-5 w-5 transition-transform"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
@@ -224,23 +211,21 @@ function isActive(routeName) {
 
                     <!-- Search -->
                     <div class="relative hidden sm:block">
-                        <svg class="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <input
-                            type="search"
-                            placeholder="Quick Search..."
+                        <input type="search" placeholder="Quick Search..."
                             class="h-8 w-48 rounded-lg pl-9 pr-3 text-xs transition-all focus:outline-none focus:w-60"
                             style="background: #f8fafc; border: 1px solid #eef0f4; color: #475569;"
                             onfocus="this.style.borderColor='#6d5dfc'; this.style.boxShadow='0 0 0 3px rgba(109,93,252,0.1)';"
-                            onblur="this.style.borderColor='#eef0f4'; this.style.boxShadow='';"
-                        />
+                            onblur="this.style.borderColor='#eef0f4'; this.style.boxShadow='';" />
                     </div>
 
                     <!-- Notification -->
-                    <button class="relative p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                    <button
+                        class="relative p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -254,7 +239,8 @@ function isActive(routeName) {
                     <!-- User dropdown -->
                     <Dropdown align="right" width="56">
                         <template #trigger>
-                            <button class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100 transition-colors focus:outline-none">
+                            <button
+                                class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100 transition-colors focus:outline-none">
                                 <div class="h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-semibold"
                                     style="background: linear-gradient(135deg, #6d5dfc, #48cfad);">
                                     {{ page.props.auth.user?.name?.charAt(0).toUpperCase() }}
@@ -262,8 +248,10 @@ function isActive(routeName) {
                                 <span class="hidden sm:block text-sm font-medium text-slate-600">
                                     {{ page.props.auth.user?.name }}
                                 </span>
-                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
                         </template>
@@ -275,7 +263,8 @@ function isActive(routeName) {
                             </div>
 
                             <DropdownLink :href="route('profile.edit')" class="dropdown-item mt-1">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
