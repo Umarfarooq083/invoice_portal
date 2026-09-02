@@ -43,7 +43,8 @@ class MergerService
 
         return [
             'blocks' => $blocks,
-            'box_no' => $boxNo
+            'box_no' => $boxNo,
+            'dealers' => \App\Models\Dealer::all(['id', 'name'])->toArray()
         ];
     }
 }

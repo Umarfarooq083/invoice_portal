@@ -9,6 +9,7 @@ import { useCreateMerger } from '../composables/useCreateMerger';
 const props = defineProps({
     blocks: Array,
     box_no: String,
+    dealers: Array,
 });
 
 const {
@@ -424,8 +425,14 @@ const {
                             </div>
 
                             <div>
-                                <InputLabel for="dealer_name" value="Dealer Name" class="label" />
-                                <TextInput id="dealer_name" type="text" class="mt-1" v-model="form.dealer_name" />
+                                <InputLabel for="dealer_name" value="Dealer Name *" class="label" />
+                                <select id="dealer_name" class="input mt-1" v-model="form.dealer_name" required>
+                                    <option value="" disabled>Select Dealer</option>
+                                    <option v-for="dealer in dealers" :key="dealer.id" :value="dealer.name">
+                                        {{ dealer.name }}
+                                    </option>
+                                </select>
+                                <InputError class="mt-1.5" :message="form.errors.dealer_name" />
                             </div>
 
                             <div>
