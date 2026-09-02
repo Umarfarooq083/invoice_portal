@@ -27,16 +27,16 @@ class InvoiceService
         $query->with('block', 'user');
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
-        $query->whereHas('block', function ($q) {
-            $q->whereDoesntHave('blockRoles')
-              ->orWhereHas('blockRoles', function ($roleQuery) {
-                  $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-              });
-        });
+        // $query->whereHas('block', function ($q) {
+        //     $q->whereDoesntHave('blockRoles')
+        //       ->orWhereHas('blockRoles', function ($roleQuery) {
+        //           $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+        //       });
+        // });
 
         return $query->orderBy($sortField, $sortDirection)->paginate($perPage)->appends(request()->query());
     }
-   
+
     public function getCreateData(): array
     {
         $boxNo = now()->format('dmy');
@@ -48,9 +48,9 @@ class InvoiceService
             $query->where('module_name', 'invoice');
         })->where(function ($query) {
             $query->whereDoesntHave('blockRoles')
-                  ->orWhereHas('blockRoles', function ($roleQuery) {
-                      $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
-                  });
+                ->orWhereHas('blockRoles', function ($roleQuery) {
+                    $roleQuery->whereIn('block_roles.id', auth()->check() ? auth()->user()->blockRoles->pluck('id') : []);
+                });
         })->orderBy('name')->get(['id', 'name']);
 
         return [
@@ -64,7 +64,7 @@ class InvoiceService
     public function createInvoice(array $data): Invoice
     {
         if (!isset($data['file_id'])) {
-            $data['file_id'] = 0; 
+            $data['file_id'] = 0;
         }
         if (!isset($data['dealer_name'])) {
             $data['dealer_name'] = '';

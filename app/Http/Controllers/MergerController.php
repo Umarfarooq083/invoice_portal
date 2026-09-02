@@ -33,6 +33,7 @@ class MergerController extends Controller
     {
         $request->validate([
             'society_id' => 'required',
+            'dealer_name' => 'required',
             'from_app_no' => [
                 'required',
                 \Illuminate\Validation\Rule::unique('invoice_merge', 'from_reg_no')->where(function ($query) use ($request) {
