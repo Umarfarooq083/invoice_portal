@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('client_contact')->nullable();
             $table->string('plot_type')->nullable();
             $table->string('address')->nullable();
-            $table->string('dealer_name');
+            $table->string('dealer_name')->nullable();
             $table->string('dealer_phone');
             $table->integer('transfer_status')->default(0);
             $table->string('collection_address')->nullable();

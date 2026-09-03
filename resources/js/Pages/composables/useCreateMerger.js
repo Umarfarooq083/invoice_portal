@@ -47,7 +47,7 @@ export function useCreateMerger(props) {
         // --- Client Details ---
         box_no: props.box_no,
         tracking_code: generateTrackingCode(),
-        dealer_name: '',
+        dealer_id: '',
         dealer_phone: '',
         submitter_cnic: '',
     });
@@ -135,7 +135,7 @@ export function useCreateMerger(props) {
         form.sub_option_1 = '';
         form.sub_option_2 = '';
         clearAppAndMergeDetails();
-        form.dealer_name = '';
+        form.dealer_id = '';
         form.dealer_phone = '';
         form.submitter_cnic = '';
     });

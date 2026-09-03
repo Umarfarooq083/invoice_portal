@@ -15,7 +15,7 @@ class MergerService
     {
         $sortField = $filters['sort'] ?? 'id';
         $sortDirection = $filters['direction'] ?? 'desc';
-        $query = Merger::query();
+        $query = Merger::with('block', 'dealer');
         // Filter out mergers that belong to blocks the user doesn't have access to
         // $query->whereHas('block', function ($q) {
         //     $q->whereDoesntHave('blockRoles')

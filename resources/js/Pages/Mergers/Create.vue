@@ -425,14 +425,14 @@ const {
                             </div>
 
                             <div>
-                                <InputLabel for="dealer_name" value="Dealer Name *" class="label" />
-                                <select id="dealer_name" class="input mt-1" v-model="form.dealer_name" required>
+                                <InputLabel for="dealer_id" value="Dealer Name *" class="label" />
+                                <select id="dealer_id" class="input mt-1" v-model="form.dealer_id" required>
                                     <option value="" disabled>Select Dealer</option>
-                                    <option v-for="dealer in dealers" :key="dealer.id" :value="dealer.name">
+                                    <option v-for="dealer in dealers" :key="dealer.id" :value="dealer.id">
                                         {{ dealer.name }}
                                     </option>
                                 </select>
-                                <InputError class="mt-1.5" :message="form.errors.dealer_name" />
+                                <InputError class="mt-1.5" :message="form.errors.dealer_id" />
                             </div>
 
                             <div>

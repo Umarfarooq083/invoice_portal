@@ -45,6 +45,7 @@ function destroyMerger() {
 
 <template>
     <AuthenticatedLayout>
+
         <Head title="Mergers" />
 
         <div class="flex items-center justify-between mb-4">
@@ -67,9 +68,26 @@ function destroyMerger() {
                             <th @click="sort('id')" class="cursor-pointer hover:bg-slate-50">
                                 <div class="flex items-center gap-1">
                                     ID
-                                    <span v-if="filters?.sort === 'id'" class="text-xs">{{ filters.direction === 'asc' ? '↑' : '↓' }}</span>
+                                    <span v-if="filters?.sort === 'id'" class="text-xs">{{ filters.direction === 'asc' ?
+                                        '↑' : '↓' }}</span>
                                     <span v-else class="text-xs text-slate-300">↕</span>
                                 </div>
+                            </th>
+                            <th @click="sort('society_id')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">Block</div>
+                            </th>
+                            <th @click="sort('tracking_code')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">Tracking Code</div>
+                            </th>
+                            <th @click="sort('reg_no')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">App No</div>
+                            </th>
+
+                            <th @click="sort('client_name')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">Client Name</div>
+                            </th>
+                            <th @click="sort('dealer_name')" class="cursor-pointer hover:bg-slate-50">
+                                <div class="flex items-center gap-1">Dealer</div>
                             </th>
                             <th>Actions</th>
                         </tr>
@@ -79,20 +97,39 @@ function destroyMerger() {
                             <td>
                                 <span class="font-mono text-xs font-semibold">{{ merger.id }}</span>
                             </td>
+                            <td>{{ merger.block ? merger.block.name : '-' }}</td>
+                            <td>{{ merger.tracking_code }}</td>
+                            <td>{{ merger.reg_no }}</td>
+
+                            <td>{{ merger.client_name }}</td>
+                            <td>{{ merger?.dealer?.name }}</td>
                             <td>
                                 <div class="flex gap-1">
-                                    <Link :href="route('mergers.edit', merger.id)"
+                                    <!-- <Link :href="route('mergers.edit', merger.id)"
                                         class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                                         title="Edit">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </Link> -->
+
+                                    <Link 
+                                        class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                                        title="Status Update">
+                                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 12c0 5.591 3.824 10.29 9 11.622C17.176 22.29 21 17.591 21 12c0-1.412-.244-2.77-.69-4.016z" />
                                         </svg>
                                     </Link>
-                                    <button @click="confirmDelete(merger)"
+
+                                    <!-- @click="confirmDelete(merger)" -->
+                                    <button
                                         class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                                         title="Delete">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </div>
@@ -106,7 +143,8 @@ function destroyMerger() {
             <div v-if="!mergers.data || mergers.data.length === 0" class="text-center py-16">
                 <div class="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
                     <svg class="h-7 w-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                 </div>
                 <p class="text-sm font-medium text-slate-500">No mergers found</p>
@@ -123,16 +161,14 @@ function destroyMerger() {
         </div>
     </AuthenticatedLayout>
 
-    <Modal
-        :show="deleteModal.show"
-        @close="deleteModal = { show: false, merger: null }"
-    >
+    <Modal :show="deleteModal.show" @close="deleteModal = { show: false, merger: null }">
         <div class="p-6">
             <div class="flex items-center gap-3 mb-4">
                 <div class="h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0"
                     style="background: #fee2e2;">
                     <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </div>
                 <div>
@@ -148,10 +184,7 @@ function destroyMerger() {
                 <SecondaryButton @click="deleteModal = { show: false, merger: null }">
                     Cancel
                 </SecondaryButton>
-                <DangerButton
-                    :disabled="deleteForm.processing"
-                    @click="destroyMerger"
-                >
+                <DangerButton :disabled="deleteForm.processing" @click="destroyMerger">
                     <span v-if="deleteForm.processing">Deleting...</span>
                     <span v-else>Delete</span>
                 </DangerButton>

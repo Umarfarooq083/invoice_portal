@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('merge_multiple_files', function (Blueprint $table) {
             $table->id();
-            $table->integer('merge_to');
+            $table->string('merge_to');
             $table->string('reg_no');
             $table->integer('merge_society_id');
             $table->string('security_code');
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('created_by');
             $table->integer('invoice_merge_id');
             $table->integer('box_no');
-            $table->integer('sr_no');
-            $table->integer('case_no');
+            $table->integer('sr_no')->nullable();
+            $table->integer('case_no')->nullable();
             $table->integer('office_id');
             $table->string('tracking_code');
             $table->integer('ledger_amount')->nullable();
