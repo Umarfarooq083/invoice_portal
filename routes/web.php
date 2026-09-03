@@ -48,6 +48,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/mergers/fetch-merge-to-data', [\App\Http\Controllers\MergerController::class, 'fetchMergeToData'])->name('mergers.fetch-merge-to-data');
     Route::resource('mergers', \App\Http\Controllers\MergerController::class);
 
+    // ─── APR Routes ───────//
+    Route::get('/aprs/fetch-main-app-data', [\App\Http\Controllers\AprController::class, 'fetchMainAppData'])->name('aprs.fetch-main-app-data');
+    Route::get('/aprs/fetch-merge-to-data', [\App\Http\Controllers\AprController::class, 'fetchMergeToData'])->name('aprs.fetch-merge-to-data');
+    Route::resource('aprs', \App\Http\Controllers\AprController::class);
+
     // ─── Invoice Merger Types Routes ───────//
     Route::resource('invoice-merger-types', \App\Http\Controllers\InvoiceMergerTypeController::class);
 });

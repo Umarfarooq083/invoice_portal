@@ -28,6 +28,7 @@ const navSections = [
             { name: 'Open To Byname', href: route('invoices.index'), icon: 'document', routeName: 'invoices.index' },
             // { name: 'Merger Types', href: route('invoice-merger-types.index'), icon: 'document', routeName: 'invoice-merger-types.index' },
             { name: 'Mergers', href: route('mergers.index'), icon: 'document', routeName: 'mergers.index' },
+            { name: 'APR', href: route('aprs.index'), icon: 'document', routeName: 'aprs.index' },
         ],
     },
 ];
@@ -51,6 +52,8 @@ const pageTitles = {
     'Invoices/Create': 'Create Invoice',
     'Mergers/Index': 'Mergers',
     'Mergers/Create': 'Create Merger',
+    'Aprs/Index': 'APR',
+    'Aprs/Create': 'Create APR',
 };
 
 const currentPage = computed(() => {
