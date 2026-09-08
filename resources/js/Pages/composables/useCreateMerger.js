@@ -77,9 +77,13 @@ export function useCreateMerger(props) {
                 { value: '2', label: 'Open' },
                 { value: '3', label: 'Form' }
             ];
-        } else if (selectedBlockName.value === 'Blue World NAC-06' || selectedBlockName.value === 'Down Town') {
+        } else if (selectedBlockName.value === 'Down Town') {
             return [
-                { value: '2', label: 'Open' }
+                { value: '4', label: 'Open' }
+            ];
+        } else if(selectedBlockName.value === 'Blue World NAC-06'){
+             return [
+                { value: '5', label: 'Open' }
             ];
         }
         return [];
