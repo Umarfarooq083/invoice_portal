@@ -81,8 +81,8 @@ export function useCreateMerger(props) {
             return [
                 { value: '4', label: 'Open' }
             ];
-        } else if(selectedBlockName.value === 'Blue World NAC-06'){
-             return [
+        } else if (selectedBlockName.value === 'Blue World NAC-06') {
+            return [
                 { value: '5', label: 'Open' }
             ];
         }
@@ -158,29 +158,41 @@ export function useCreateMerger(props) {
             return;
         }
         isFetching.value = true;
-
         axios.get(route('mergers.fetch-main-app-data'), {
             params: {
                 reg_no: form.registration_no,
                 society_id: form.society_id,
                 is_open: form.sub_option_1,
+                merging_type: form.sub_option_2,
             }
         })
             .then(response => {
                 isFetching.value = false;
                 const data = response.data.data || response.data;
+
                 if (data && (response.data.success !== false)) {
                     if (data.reg_no) form.from_app_no = data.reg_no;
                     if (data.security_code) form.from_security_code = data.security_code;
-                    if (data.marla_display_size) form.from_size = data.marla_display_size;
+
+                    if (form.sub_option_2 == 1) {
+                        if (data.plot_size_title) form.from_size = data.plot_size_title;
+                        if (data.plot_price) form.payment_plan_plot_price = data.plot_price;
+                        if (data.down_payment) form.payment_plan_down_payment = data.down_payment;
+                        if (data.down_payment) form.ledger_down_payment = data.down_payment;
+                        if (data.plot_price) form.ledger_plot_price = data.plot_price;
+                    }
+                    else {
+                        if (data.marla_display_size) form.from_size = data.marla_display_size;
+                        if (data.payment_plan_plot_price) form.payment_plan_plot_price = data.payment_plan_plot_price;
+                        if (data.payment_plan_down_payment) form.payment_plan_down_payment = data.payment_plan_down_payment;
+                        if (data.legder_down_payment) form.ledger_down_payment = data.legder_down_payment;
+                        if (data.legder_plot_price) form.ledger_plot_price = data.legder_plot_price;
+                    }
+
                     if (data.member_name) form.client_name = data.member_name;
                     if (data.client_cnic) form.client_cnic = data.client_cnic;
                     if (data.plot_type_title) form.app_type = data.plot_type_title;
-                    if (data.payment_plan_plot_price) form.payment_plan_plot_price = data.payment_plan_plot_price;
                     if (data.payment_plan_id) form.payment_plan_live_id = data.payment_plan_id;
-                    if (data.payment_plan_down_payment) form.payment_plan_down_payment = data.payment_plan_down_payment;
-                    if (data.legder_down_payment) form.ledger_down_payment = data.legder_down_payment;
-                    if (data.legder_plot_price) form.ledger_plot_price = data.legder_plot_price;
                     if (data.sum_payment) form.sum_payment = data.sum_payment;
                     if (data.received_downpayment) form.received_downpayment = data.received_downpayment;
                 } else {

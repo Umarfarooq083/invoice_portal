@@ -121,6 +121,22 @@ class MergerController extends Controller
             'reg_no' => 'required',
             'society_id' => 'required'
         ]);
+
+        $block = \App\Models\Block::find($request->society_id);
+
+        if ($block && $block->name === 'Down Town') {
+            if ($request->is_open == '4' && $request->merging_type == '1') {
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'token' => config('services.awamigreen.token')
+                ])->get('http://webtointr.bwcapp.net/api/map/get-dt-open-awami-green', [
+                    'reg_no' => $request->reg_no
+                ]);
+                // dd($response->json());
+                return $response->json();
+            }
+        }
+
         // dd($request->all());
         if ($request->is_open == '3') {
             // Form Search
