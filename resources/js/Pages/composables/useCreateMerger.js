@@ -274,6 +274,19 @@ export function useCreateMerger(props) {
                     if (data.payment_plan_id) detail.to_payment_plan_live_id = data.payment_plan_id;
                     if (data.payment_plan_down_payment_gen) detail.to_payment_plan_down_payment = data.payment_plan_down_payment_gen;
                     if (data.payment_plan_down_payment_gen) detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
+
+                    if (form.sub_option_2 == 1) {
+                        let dp_gen = String(data.payment_plan_down_payment_gen || '');
+                        let p_size = String(data.plot_size_title || data.marla_display_size || '').replace(/\s/g, '').toLowerCase();
+                        
+                        if (dp_gen === '147000' && p_size === '100sq.yards') {
+                            detail.ledger_amount = 70000;
+                            detail.merging_fee = 77000;                          
+                        } else if (dp_gen === '210000' && p_size === '150sq.yards') {
+                            detail.ledger_amount = 100000;
+                            detail.merging_fee = 110000;         
+                        }
+                    }
                 } else {
                     alert(response.data?.message || 'Data not found. Please check the Reg No.');
                 }

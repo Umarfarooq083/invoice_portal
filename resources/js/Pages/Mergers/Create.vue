@@ -63,13 +63,7 @@ const {
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                             </div>
-                            <h2 class="text-base font-semibold text-slate-800">Block & Type Selection
-                                
-                                <!-- <div v-if="form.sub_option_2 == '1'"
-                                    class="col-span-full lg:col-span-1 animate-fade-in">
-                                    <InputLabel for="balance" value="Balance" class="label" /> -->
-                                
-                            </h2>
+                            <h2 class="text-base font-semibold text-slate-800">Block & Type Selection</h2>
                             <span v-if="form.sub_option_2 == '1'">
                                 Balance: {{ form.balance }}
                             </span>
