@@ -128,11 +128,19 @@ class MergerController extends Controller
             if ($request->is_open == '4' && $request->merging_type == '1') {
                 $response = \Illuminate\Support\Facades\Http::withHeaders([
                     'Content-Type' => 'application/json',
-                    'token' => config('services.awamigreen.token')
-                ])->get('http://webtointr.bwcapp.net/api/map/get-dt-open-awami-green', [
+                    'token' => config('services.mapserver.token')
+                ])->get(config('services.mapserver.base_url').'/get-dt-open-awami-green', [
                     'reg_no' => $request->reg_no
                 ]);
-                // dd($response->json());
+                return $response->json();
+            }
+            if ($request->is_open == '4' && $request->merging_type == '2') {
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'token' => config('services.mapserver.token')
+                ])->get(config('services.mapserver.base_url').'/get-dt-open-sector-a', [
+                    'reg_no' => $request->reg_no
+                ]);
                 return $response->json();
             }
         }

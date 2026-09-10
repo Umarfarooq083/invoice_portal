@@ -193,19 +193,21 @@ export function useCreateMerger(props) {
                     if (data.reg_no) form.from_app_no = data.reg_no;
                     if (data.security_code) form.from_security_code = data.security_code;
 
-                    if (form.sub_option_2 == 1) {
+                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2) {
                         if (data.plot_size_title) form.from_size = data.plot_size_title;
                         if (data.plot_price) form.payment_plan_plot_price = data.plot_price;
                         if (data.down_payment) {
                             form.payment_plan_down_payment = data.down_payment;
                             form.ledger_down_payment = data.down_payment;
                             
-                            let dp = parseFloat(data.down_payment);
-                            if (dp === 1400000) form.balance = 4000000;
-                            else if (dp === 1600000) form.balance = 4500000;
-                            else if (dp === 1800000) form.balance = 7000000;
-                            else if (dp === 2000000) form.balance = 9000000;
-                            else form.balance = 0;
+                            if (form.sub_option_2 == 1) {
+                                let dp = parseFloat(data.down_payment);
+                                if (dp === 1400000) form.balance = 4000000;
+                                else if (dp === 1600000) form.balance = 4500000;
+                                else if (dp === 1800000) form.balance = 7000000;
+                                else if (dp === 2000000) form.balance = 9000000;
+                                else form.balance = 0;
+                            }
                         }
                         if (data.plot_price) form.ledger_plot_price = data.plot_price;
                     }

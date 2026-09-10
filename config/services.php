@@ -40,5 +40,9 @@ return [
         'token' => env('API_TOKEN'),
     ],
 
-];
+    'mapserver' => [
+        'base_url' => env('MAP_API_BASE_URL'),
+        'token' => env('API_TOKEN'),
+    ],
 
+];
