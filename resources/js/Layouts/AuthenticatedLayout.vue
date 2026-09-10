@@ -3,7 +3,6 @@ import { ref, computed, h, onMounted, watch } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const page = usePage();
@@ -22,6 +21,7 @@ const navSections = [
         label: 'Management',
         items: [
             { name: 'Dealers', href: route('dealers.index'), icon: 'users', routeName: 'dealers.index' },
+            { name: 'Offices', href: route('offices.index'), icon: 'document', routeName: 'offices.index' },
             { name: 'Blocks', href: route('blocks.index'), icon: 'document', routeName: 'blocks.index' },
             { name: 'Block Roles', href: route('block-roles.index'), icon: 'users', routeName: 'block-roles.index' },
             { name: 'Forms', href: route('forms.index'), icon: 'document', routeName: 'forms.index' },
@@ -33,33 +33,8 @@ const navSections = [
     },
 ];
 
-const pageTitles = {
-    Dashboard: 'Dashboard',
-    'Blocks/Index': 'Blocks',
-    'Blocks/Create': 'Create Block',
-    'Blocks/Edit': 'Edit Block',
-    'BlockRoles/Index': 'Block Roles',
-    'BlockRoles/Create': 'Create Block Role',
-    'BlockRoles/Edit': 'Edit Block Role',
-    'Forms/Index': 'Forms',
-    'Forms/Create': 'Create Form',
-    'Forms/Edit': 'Edit Form',
-    'Forms/Show': 'Form Details',
-    'Dealers/Index': 'Dealers',
-    'Dealers/Create': 'Create Dealer',
-    'Dealers/Edit': 'Edit Dealer',
-    'Invoices/Index': 'Invoices',
-    'Invoices/Create': 'Create Invoice',
-    'Mergers/Index': 'Mergers',
-    'Mergers/Create': 'Create Merger',
-    'Aprs/Index': 'APR',
-    'Aprs/Create': 'Create APR',
-};
 
-const currentPage = computed(() => {
-    const component = page.props.component;
-    return (component && pageTitles[component]) ? pageTitles[component] : 'Dashboard';
-});
+
 
 const desktopSidebarClass = computed(() => sidebarCollapsed.value ? 'lg:w-16' : 'lg:w-60');
 const desktopContentClass = computed(() => sidebarCollapsed.value ? 'lg:pl-16' : 'lg:pl-60');
@@ -202,10 +177,6 @@ function isActive(routeName) {
                     <!-- Breadcrumb -->
                     <div class="flex items-center gap-1.5 text-sm">
                         <span class="text-slate-400">Invoice Portal</span>
-                        <svg class="h-3.5 w-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                        <span class="font-medium text-slate-700">{{ currentPage }}</span>
                     </div>
                 </div>
 
@@ -295,7 +266,6 @@ function isActive(routeName) {
                     <slot name="header" />
                 </div>
             </header>
-
             <!-- Main content -->
             <main class="flex-1 mx-auto w-full max-w-full px-4 py-5 sm:px-6 lg:px-8">
                 <slot />

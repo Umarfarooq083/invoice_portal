@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
 
     // ─── Invoice Merger Types Routes ───────//
     Route::resource('invoice-merger-types', \App\Http\Controllers\InvoiceMergerTypeController::class);
+
+    // ─── Offices Routes ───────//
+    Route::resource('offices', \App\Http\Controllers\OfficeController::class);
 });
 
 require __DIR__ . '/auth.php';
