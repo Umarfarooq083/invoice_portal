@@ -159,6 +159,23 @@ export function useCreateMerger(props) {
             alert("Please select File Type");
             return;
         }
+
+        // Clear previous Merge To details whenever the main App data is re-fetched
+        form.merge_to_details = [
+            {
+                merge_to: '',
+                merge_to_no: '',
+                to_security_code: '',
+                to_size: '',
+                merge_app_type: '',
+                ledger_amount: '',
+                merging_fee: '',
+                to_payment_plan_plot_price: '',
+                to_payment_plan_live_id: '',
+                to_payment_plan_down_payment: '',
+            }
+        ];
+
         isFetching.value = true;
         axios.get(route('mergers.fetch-main-app-data'), {
             params: {
@@ -231,6 +248,10 @@ export function useCreateMerger(props) {
     const fetchMergeToData = (index) => {
         const detail = form.merge_to_details[index];
         if (!detail.merge_to) return;
+        
+        // Store old ledger amount before fetching new data
+        const oldLedgerAmount = detail.ledger_amount ? Number(detail.ledger_amount) : 0;
+        
         isFetchingMergeTo.value[index] = true;
 
         axios.get(route('mergers.fetch-merge-to-data'), {
@@ -287,6 +308,14 @@ export function useCreateMerger(props) {
                             detail.merging_fee = 110000;         
                         }
                     }
+
+                    if (oldLedgerAmount) {
+                        form.balance = (Number(form.balance) || 0) + oldLedgerAmount;
+                    }
+
+                    if (detail.ledger_amount && form.balance !== undefined) {
+                        form.balance = (Number(form.balance) || 0) - Number(detail.ledger_amount);
+                    }
                 } else {
                     alert(response.data?.message || 'Data not found. Please check the Reg No.');
                 }
@@ -328,8 +357,27 @@ export function useCreateMerger(props) {
     };
 
     const removeMergeToDetail = (index) => {
+        const detailToRemove = form.merge_to_details[index];
+        if (detailToRemove.ledger_amount) {
+            form.balance = (Number(form.balance) || 0) + Number(detailToRemove.ledger_amount);
+        }
+        
         if (form.merge_to_details.length > 1) {
             form.merge_to_details.splice(index, 1);
+        } else {
+            // Clear the first row if it's the only one left
+            form.merge_to_details[0] = {
+                merge_to: '',
+                merge_to_no: '',
+                to_security_code: '',
+                to_size: '',
+                merge_app_type: '',
+                ledger_amount: '',
+                merging_fee: '',
+                to_payment_plan_plot_price: '',
+                to_payment_plan_live_id: '',
+                to_payment_plan_down_payment: '',
+            };
         }
     };
 
