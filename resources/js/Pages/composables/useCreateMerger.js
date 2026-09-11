@@ -199,7 +199,7 @@ export function useCreateMerger(props) {
                         if (data.down_payment) {
                             form.payment_plan_down_payment = data.down_payment;
                             form.ledger_down_payment = data.down_payment;
-                            
+
                             if (form.sub_option_2 == 1) {
                                 let dp = parseFloat(data.down_payment);
                                 if (dp === 1400000) form.balance = 4000000;
@@ -250,10 +250,10 @@ export function useCreateMerger(props) {
     const fetchMergeToData = (index) => {
         const detail = form.merge_to_details[index];
         if (!detail.merge_to) return;
-        
+
         // Store old ledger amount before fetching new data
         const oldLedgerAmount = detail.ledger_amount ? Number(detail.ledger_amount) : 0;
-        
+
         isFetchingMergeTo.value[index] = true;
 
         axios.get(route('mergers.fetch-merge-to-data'), {
@@ -278,10 +278,23 @@ export function useCreateMerger(props) {
                     const fromSizeNum = parseMarla(fromSizeStr);
                     const toSizeNum = parseMarla(toSizeStr);
 
-                    if (fromSizeNum > 0 && toSizeNum > 0 && toSizeNum > fromSizeNum) {
+                    let skipSizeRestriction = false;
+                    if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
+                        skipSizeRestriction = true;
+                    }
+
+                    if (!skipSizeRestriction && fromSizeNum > 0 && toSizeNum > 0 && toSizeNum > fromSizeNum) {
                         alert(`Merge To size (${toSizeStr}) cannot be greater than From size (${fromSizeStr}).`);
                         detail.merge_to = '';
                         return;
+                    }
+
+                    if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
+                        if (toSizeNum !== 5 && toSizeNum !== 10 && toSizeNum !== 20) {
+                            alert("File size merging condition not matched! Only 5 Marla, 10 Marla, and 1 Kanal are allowed for Sector A merging.");
+                            detail.merge_to = '';
+                            return;
+                        }
                     }
 
                     if (data.reg_no) detail.merge_to_no = data.reg_no;
@@ -301,13 +314,25 @@ export function useCreateMerger(props) {
                     if (form.sub_option_2 == 1) {
                         let dp_gen = String(data.payment_plan_down_payment_gen || '');
                         let p_size = String(data.plot_size_title || data.marla_display_size || '').replace(/\s/g, '').toLowerCase();
-                        
+
                         if (dp_gen === '147000' && p_size === '100sq.yards') {
                             detail.ledger_amount = 70000;
-                            detail.merging_fee = 77000;                          
+                            detail.merging_fee = 77000;
                         } else if (dp_gen === '210000' && p_size === '150sq.yards') {
                             detail.ledger_amount = 100000;
-                            detail.merging_fee = 110000;         
+                            detail.merging_fee = 110000;
+                        }
+                    } else if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
+                        if (toSizeNum === 5) {
+                            detail.merging_fee = 1100000;
+                        } else if (toSizeNum === 10) {
+                            detail.merging_fee = 2000000;
+                        } else if (toSizeNum === 20) {
+                            detail.merging_fee = 3300000;
+                        }
+
+                        if (data.payment_plan_down_payment_gen) {
+                            detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
                         }
                     }
 
@@ -363,7 +388,7 @@ export function useCreateMerger(props) {
         if (detailToRemove.ledger_amount) {
             form.balance = (Number(form.balance) || 0) + Number(detailToRemove.ledger_amount);
         }
-        
+
         if (form.merge_to_details.length > 1) {
             form.merge_to_details.splice(index, 1);
         } else {
