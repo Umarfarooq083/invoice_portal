@@ -356,6 +356,22 @@ export function useCreateMerger(props) {
     };
 
     const addMergeToDetail = () => {
+        const fromSizeNum = parseMarla(form.from_size);
+        let maxAllowed = 0;
+
+        if (fromSizeNum === 5) {
+            maxAllowed = 2;
+        } else if (fromSizeNum === 10) {
+            maxAllowed = 4;
+        } else if (fromSizeNum === 20) {
+            maxAllowed = 6;
+        }
+
+        if (maxAllowed > 0 && form.merge_to_details.length >= maxAllowed) {
+            alert(`You can only merge a maximum of ${maxAllowed} files for a ${form.from_size} plot.`);
+            return;
+        }
+
         form.merge_to_details.push({
             merge_to: '',
             merge_to_no: '',

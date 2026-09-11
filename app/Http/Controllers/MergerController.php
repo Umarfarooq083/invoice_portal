@@ -51,8 +51,6 @@ class MergerController extends Controller
 
         try {
             DB::beginTransaction();
-
-
             $merger = Merger::create([
                 'society_id' => $request->society_id,
                 'is_open' => $request->sub_option_1 ?? 0,
@@ -129,7 +127,7 @@ class MergerController extends Controller
                 $response = \Illuminate\Support\Facades\Http::withHeaders([
                     'Content-Type' => 'application/json',
                     'token' => config('services.mapserver.token')
-                ])->get(config('services.mapserver.base_url').'/get-dt-open-awami-green', [
+                ])->get(config('services.mapserver.base_url') . '/get-dt-open-awami-green', [
                     'reg_no' => $request->reg_no
                 ]);
                 return $response->json();
@@ -138,7 +136,7 @@ class MergerController extends Controller
                 $response = \Illuminate\Support\Facades\Http::withHeaders([
                     'Content-Type' => 'application/json',
                     'token' => config('services.mapserver.token')
-                ])->get(config('services.mapserver.base_url').'/get-dt-open-sector-a', [
+                ])->get(config('services.mapserver.base_url') . '/get-dt-open-sector-a', [
                     'reg_no' => $request->reg_no
                 ]);
                 return $response->json();
