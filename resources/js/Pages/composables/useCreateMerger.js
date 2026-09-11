@@ -278,23 +278,10 @@ export function useCreateMerger(props) {
                     const fromSizeNum = parseMarla(fromSizeStr);
                     const toSizeNum = parseMarla(toSizeStr);
 
-                    let skipSizeRestriction = false;
-                    if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
-                        skipSizeRestriction = true;
-                    }
-
-                    if (!skipSizeRestriction && fromSizeNum > 0 && toSizeNum > 0 && toSizeNum > fromSizeNum) {
+                    if (fromSizeNum > 0 && toSizeNum > 0 && toSizeNum > fromSizeNum) {
                         alert(`Merge To size (${toSizeStr}) cannot be greater than From size (${fromSizeStr}).`);
                         detail.merge_to = '';
                         return;
-                    }
-
-                    if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
-                        if (toSizeNum !== 5 && toSizeNum !== 10 && toSizeNum !== 20) {
-                            alert("File size merging condition not matched! Only 5 Marla, 10 Marla, and 1 Kanal are allowed for Sector A merging.");
-                            detail.merge_to = '';
-                            return;
-                        }
                     }
 
                     if (data.reg_no) detail.merge_to_no = data.reg_no;
@@ -321,18 +308,6 @@ export function useCreateMerger(props) {
                         } else if (dp_gen === '210000' && p_size === '150sq.yards') {
                             detail.ledger_amount = 100000;
                             detail.merging_fee = 110000;
-                        }
-                    } else if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
-                        if (toSizeNum === 5) {
-                            detail.merging_fee = 1100000;
-                        } else if (toSizeNum === 10) {
-                            detail.merging_fee = 2000000;
-                        } else if (toSizeNum === 20) {
-                            detail.merging_fee = 3300000;
-                        }
-
-                        if (data.payment_plan_down_payment_gen) {
-                            detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
                         }
                     }
 
