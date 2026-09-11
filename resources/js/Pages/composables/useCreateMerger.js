@@ -150,6 +150,17 @@ export function useCreateMerger(props) {
         clearAppAndMergeDetails();
     });
 
+    const parseMarla = (sizeStr) => {
+        if (!sizeStr) return 0;
+        let str = String(sizeStr).toLowerCase().trim();
+        let num = parseFloat(str);
+        if (isNaN(num)) return 0;
+        if (str.includes('kanal')) {
+            return num * 20;
+        }
+        return num;
+    };
+
     const fetchFromAppData = () => {
         if (!form.registration_no || !form.society_id) {
             alert("Please select Block and enter App No");
@@ -207,6 +218,17 @@ export function useCreateMerger(props) {
                                 else if (dp === 1800000) form.balance = 7000000;
                                 else if (dp === 2000000) form.balance = 9000000;
                                 else form.balance = 0;
+                            } else if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 2) {
+                                let fromSizeNum = parseMarla(data.plot_size_title || data.marla_display_size || '');
+                                if (fromSizeNum === 5) {
+                                    form.balance = 1100000;
+                                } else if (fromSizeNum === 10) {
+                                    form.balance = 2000000;
+                                } else if (fromSizeNum === 20) {
+                                    form.balance = 3300000;
+                                } else {
+                                    form.balance = 0;
+                                }
                             }
                         }
                         if (data.plot_price) form.ledger_plot_price = data.plot_price;
@@ -236,16 +258,6 @@ export function useCreateMerger(props) {
             });
     };
 
-    const parseMarla = (sizeStr) => {
-        if (!sizeStr) return 0;
-        let str = String(sizeStr).toLowerCase().trim();
-        let num = parseFloat(str);
-        if (isNaN(num)) return 0;
-        if (str.includes('kanal')) {
-            return num * 20;
-        }
-        return num;
-    };
 
     const fetchMergeToData = (index) => {
         const detail = form.merge_to_details[index];
@@ -288,7 +300,7 @@ export function useCreateMerger(props) {
                     if (data.security_code) detail.to_security_code = data.security_code;
                     if (data.marla_display_size) {
                         detail.to_size = data.marla_display_size;
-                        if (toSizeNum > 0) {
+                        if (toSizeNum > 0 && form.society_id == 14) {
                             detail.merging_fee = toSizeNum * 1000;
                         }
                     }
@@ -298,7 +310,7 @@ export function useCreateMerger(props) {
                     if (data.payment_plan_down_payment_gen) detail.to_payment_plan_down_payment = data.payment_plan_down_payment_gen;
                     if (data.payment_plan_down_payment_gen) detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
 
-                    if (form.sub_option_2 == 1) {
+                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2) {
                         let dp_gen = String(data.payment_plan_down_payment_gen || '');
                         let p_size = String(data.plot_size_title || data.marla_display_size || '').replace(/\s/g, '').toLowerCase();
 

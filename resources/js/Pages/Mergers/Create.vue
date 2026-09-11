@@ -64,7 +64,7 @@ const {
                                 </svg>
                             </div>
                             <h2 class="text-base font-semibold text-slate-800">Block & Type Selection</h2>
-                            <span v-if="form.sub_option_2 == '1'">
+                            <span v-if="form.sub_option_2 == '1' || form.sub_option_2 == '2'">
                                 Balance: {{ form.balance }}
                             </span>
                         </div>
