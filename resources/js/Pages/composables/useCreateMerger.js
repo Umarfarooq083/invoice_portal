@@ -292,6 +292,9 @@ export function useCreateMerger(props) {
         axios.get(route('mergers.fetch-merge-to-data'), {
             params: {
                 reg_no: detail.merge_to,
+                society_id: form.society_id,
+                is_open: form.sub_option_1,
+                merging_type: form.sub_option_2,
             }
         })
             .then(response => {
@@ -306,7 +309,7 @@ export function useCreateMerger(props) {
                     }
 
                     const fromSizeStr = form.from_size || '';
-                    const toSizeStr = data.marla_display_size || '';
+                    const toSizeStr = data.marla_display_size || data.plot_size_title || '';
 
                     const fromSizeNum = parseMarla(fromSizeStr);
                     const toSizeNum = parseMarla(toSizeStr);
@@ -319,20 +322,27 @@ export function useCreateMerger(props) {
 
                     if (data.reg_no) detail.merge_to_no = data.reg_no;
                     if (data.security_code) detail.to_security_code = data.security_code;
-                    if (data.marla_display_size) {
-                        detail.to_size = data.marla_display_size;
+                    if (data.marla_display_size || data.plot_size_title) {
+                        detail.to_size = data.marla_display_size || data.plot_size_title;
                         if (toSizeNum > 0 && form.society_id == 14) {
                             detail.merging_fee = toSizeNum * 1000;
                         }
                     }
                     if (data.plot_type_title) detail.merge_app_type = data.plot_type_title;
-                    if (data.payment_plan_plot_price_gen) detail.to_payment_plan_plot_price = data.payment_plan_plot_price_gen;
+                    
+                    let plot_price_val = data.payment_plan_plot_price_gen || data.plot_price;
+                    if (plot_price_val) detail.to_payment_plan_plot_price = plot_price_val;
+                    
                     if (data.payment_plan_id) detail.to_payment_plan_live_id = data.payment_plan_id;
-                    if (data.payment_plan_down_payment_gen) detail.to_payment_plan_down_payment = data.payment_plan_down_payment_gen;
-                    if (data.payment_plan_down_payment_gen) detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
+                    
+                    let down_payment_val = data.payment_plan_down_payment_gen || data.down_payment;
+                    if (down_payment_val) {
+                        detail.to_payment_plan_down_payment = down_payment_val;
+                        detail.ledger_amount = down_payment_val - (detail.merging_fee || 0);
+                    }
 
                     if (form.sub_option_2 == 1 || form.sub_option_2 == 2 || form.sub_option_2 == 3) {
-                        let dp_gen = String(data.payment_plan_down_payment_gen || '');
+                        let dp_gen = String(data.payment_plan_down_payment_gen || data.down_payment || '');
                         let p_size = String(data.plot_size_title || data.marla_display_size || '').replace(/\s/g, '').toLowerCase();
 
                         if (dp_gen === '147000' && p_size === '100sq.yards') {
@@ -341,6 +351,26 @@ export function useCreateMerger(props) {
                         } else if (dp_gen === '210000' && p_size === '150sq.yards') {
                             detail.ledger_amount = 100000;
                             detail.merging_fee = 110000;
+                        }
+
+                        if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 3) {
+                            if (dp_gen === '1400000' && p_size === '5marla') {
+                                detail.ledger_amount = 1300000;
+                                detail.merging_fee = 100000;
+                            } else if (dp_gen === '1600000' && p_size === '5marla') {
+                                detail.ledger_amount = 1500000;
+                                detail.merging_fee = 100000;
+                            } else if (dp_gen === '1800000' && p_size === '8marla') {
+                                detail.ledger_amount = 1640000;
+                                detail.merging_fee = 160000;
+                            } else if (dp_gen === '2000000' && p_size === '10marla') {
+                                detail.ledger_amount = 1800000;
+                                detail.merging_fee = 200000;
+                            } else {
+                                alert('Not Allowed!');
+                                detail.merge_to = '';
+                                return;
+                            }
                         }
                     }
 
@@ -380,16 +410,24 @@ export function useCreateMerger(props) {
         const fromSizeNum = parseMarla(form.from_size);
         let maxAllowed = 0;
 
-        if (fromSizeNum === 5) {
-            maxAllowed = 2;
-        } else if (fromSizeNum === 10) {
-            maxAllowed = 4;
-        } else if (fromSizeNum === 20) {
-            maxAllowed = 6;
+        if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 3) {
+            maxAllowed = 1;
+        } else {
+            if (fromSizeNum === 5) {
+                maxAllowed = 2;
+            } else if (fromSizeNum === 10) {
+                maxAllowed = 4;
+            } else if (fromSizeNum === 20) {
+                maxAllowed = 6;
+            }
         }
 
         if (maxAllowed > 0 && form.merge_to_details.length >= maxAllowed) {
-            alert(`You can only merge a maximum of ${maxAllowed} files for a ${form.from_size} plot.`);
+            if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 3) {
+                alert(`You can only merge a maximum of 1 file for DT Open Form Merging.`);
+            } else {
+                alert(`You can only merge a maximum of ${maxAllowed} files for a ${form.from_size} plot.`);
+            }
             return;
         }
 

@@ -238,6 +238,21 @@ class MergerController extends Controller
             'reg_no' => 'required'
         ]);
 
+        if ($request->has('society_id')) {
+            $block = \App\Models\Block::find($request->society_id);
+            if ($block && $block->name === 'Down Town') {
+                if ($request->is_open == '4' && $request->merging_type == '3') {
+                    $response = \Illuminate\Support\Facades\Http::withHeaders([
+                        'Content-Type' => 'application/json',
+                        'token' => config('services.mapserver.token')
+                    ])->get(config('services.mapserver.base_url') . '/get-down-town-com-six-cancel', [
+                        'reg_no' => $request->reg_no
+                    ]);
+                    return $response->json();
+                }
+            }
+        }
+
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'Content-Type' => 'application/json',
             'token' => config('services.awamigreen.token', '')
