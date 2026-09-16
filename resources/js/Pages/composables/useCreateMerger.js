@@ -211,7 +211,7 @@ export function useCreateMerger(props) {
                             form.payment_plan_down_payment = data.down_payment;
                             form.ledger_down_payment = data.down_payment;
 
-                            if (form.sub_option_2 == 1) {
+                            if (form.sub_option_2 == 1 || form.sub_option_2 == 3) {
                                 let dp = parseFloat(data.down_payment);
                                 if (dp === 1400000) form.balance = 4000000;
                                 else if (dp === 1600000) form.balance = 4500000;
@@ -229,9 +229,6 @@ export function useCreateMerger(props) {
                                 } else {
                                     form.balance = 0;
                                 }
-                            } else if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 3) {
-                                // Balance logic for DT Open Form Merging if needed
-                                form.balance = 0; // Set to 0 by default, can be updated based on logic
                             }
                         }
                         if (data.plot_price) form.ledger_plot_price = data.plot_price;
