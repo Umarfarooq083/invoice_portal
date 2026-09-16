@@ -141,6 +141,15 @@ class MergerController extends Controller
                 ]);
                 return $response->json();
             }
+            if ($request->is_open == '4' && $request->merging_type == '3') {
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'token' => config('services.mapserver.token')
+                ])->get(config('services.mapserver.base_url') . '/get-down-town-com-six', [
+                    'reg_no' => $request->reg_no
+                ]);
+                return $response->json();
+            }
         }
 
         // dd($request->all());

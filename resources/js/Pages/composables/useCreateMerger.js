@@ -204,7 +204,7 @@ export function useCreateMerger(props) {
                     if (data.reg_no) form.from_app_no = data.reg_no;
                     if (data.security_code) form.from_security_code = data.security_code;
 
-                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2) {
+                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2 || form.sub_option_2 == 3) {
                         if (data.plot_size_title) form.from_size = data.plot_size_title;
                         if (data.plot_price) form.payment_plan_plot_price = data.plot_price;
                         if (data.down_payment) {
@@ -229,6 +229,9 @@ export function useCreateMerger(props) {
                                 } else {
                                     form.balance = 0;
                                 }
+                            } else if (selectedBlockName.value === 'Down Town' && form.sub_option_2 == 3) {
+                                // Balance logic for DT Open Form Merging if needed
+                                form.balance = 0; // Set to 0 by default, can be updated based on logic
                             }
                         }
                         if (data.plot_price) form.ledger_plot_price = data.plot_price;
@@ -262,6 +265,27 @@ export function useCreateMerger(props) {
     const fetchMergeToData = (index) => {
         const detail = form.merge_to_details[index];
         if (!detail.merge_to) return;
+
+        // Check for duplicates
+        const mergeToVal = detail.merge_to.trim().toLowerCase();
+        const isDuplicate = form.merge_to_details.some((item, i) =>
+            i !== index && item.merge_to.trim().toLowerCase() === mergeToVal
+        );
+
+        /**
+         * Discription: Uncomment 
+         * This code then you want 
+         * To remove duplication 
+         * In mergeTo api call 
+         * Author: Umar Farooq
+         * Date:09/11/2026
+        **/
+
+        // if (isDuplicate) {
+        //     alert("This registration number is already added in another section.");
+        //     detail.merge_to = '';
+        //     return;
+        // }
 
         // Store old ledger amount before fetching new data
         const oldLedgerAmount = detail.ledger_amount ? Number(detail.ledger_amount) : 0;
@@ -310,7 +334,7 @@ export function useCreateMerger(props) {
                     if (data.payment_plan_down_payment_gen) detail.to_payment_plan_down_payment = data.payment_plan_down_payment_gen;
                     if (data.payment_plan_down_payment_gen) detail.ledger_amount = data.payment_plan_down_payment_gen - detail.merging_fee;
 
-                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2) {
+                    if (form.sub_option_2 == 1 || form.sub_option_2 == 2 || form.sub_option_2 == 3) {
                         let dp_gen = String(data.payment_plan_down_payment_gen || '');
                         let p_size = String(data.plot_size_title || data.marla_display_size || '').replace(/\s/g, '').toLowerCase();
 
